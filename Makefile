@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -Wall -Werror -g -Werror=vla -MMD
 EXEC = raiinet
-OBJECTS = hello.o
+OBJECTS = main.o
 DEPENDS = ${OBJECTS:.o=.d}
 
 ${EXEC}: ${OBJECTS}
