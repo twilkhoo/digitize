@@ -4,7 +4,10 @@
 #include <unordered_map>
 #include <vector>
 
+#include "controller.h"
+
 using std::cerr;
+using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
@@ -16,7 +19,8 @@ const bool validateAbilityString(const string &str);
 const bool validateLinkString(const string &str);
 const void toUpper(string &str);
 
-const string abilities = "LFDSP";  // All possible abilities;
+const string abilities = "LFDSPRHO";      // All possible abilities.
+const string defaultAbilities = "LFDSP";  // Default abilities.
 const vector<string> links{"V1", "V2", "V3", "V4", "D1",
                            "D2", "D3", "D4"};  // All possible links/positions.
 
@@ -28,20 +32,28 @@ int main(int argc, char *argv[]) {
   // --------------------------------------------------------------------------
 
   bool graphics = false;
-  string abilitiesP1 = "LFDSP";
-  string abilitiesP2 = "LFDSP";
+  bool enhancements = false;
+  string abilitiesP1 = defaultAbilities;
+  string abilitiesP2 = defaultAbilities;
   string linksP1 = randomizedLinks(1);
   string linksP2 = randomizedLinks(2);
 
   for (int i = 1; i < argc; ++i) {
     string arg = argv[i];
 
+    // ------------------------------------------------------------------------
     // Check for graphics.
-    if (arg == "-graphics") {
-      graphics = true;
-    }
+    // ------------------------------------------------------------------------
+    if (arg == "-graphics") graphics = true;
 
-    // Check for link placement.
+    // ------------------------------------------------------------------------
+    // Check for enhancements.
+    // ------------------------------------------------------------------------
+    if (arg == "-enablebonus") enhancements = true;
+
+    // ------------------------------------------------------------------------
+    // Check for placement.
+    // ------------------------------------------------------------------------
     if ((arg == "-link1" || arg == "-link2")) {
       // Check if there is a following cl-arg.
       if (argc <= i + 1) {
@@ -56,6 +68,7 @@ int main(int argc, char *argv[]) {
         continue;
       }
 
+      // Get the contents of the given file into an uppercase string.
       string curLink;
       string linkString;
       while (true) {
@@ -65,25 +78,30 @@ int main(int argc, char *argv[]) {
       }
       toUpper(linkString);
 
+      // Validate the string using a hashmap.
       if (!validateLinkString(linkString)) {
         cerr << "No valid placement file provided for " << arg << endl;
         continue;
       }
-
       arg == "-link1" ? linksP1 = linkString : linksP2 = linkString;
     }
 
+    // ------------------------------------------------------------------------
     // Check for abilities.
+    // ------------------------------------------------------------------------
     if ((arg == "-ability1" || arg == "-ability2")) {
+
       // Check if there is a following cl-arg.
       if (argc <= i + 1) {
         cerr << "No ability string provided for " << arg << endl;
         continue;
       }
 
+      // Get the string and normalize it (convert to uppercase)
       string abilityString = argv[i + 1];
       toUpper(abilityString);
 
+      // Validate the string using a hashmap.
       if (!validateAbilityString(abilityString)) {
         cerr << "Invalid ability string provided for " << arg << endl;
         continue;
@@ -94,16 +112,20 @@ int main(int argc, char *argv[]) {
   }
 
   if (graphics) cout << "Graphics enabled" << endl;
+  if (enhancements) cout << "Enhancements enabled" << endl;
   cout << abilitiesP1 << endl;
   cout << abilitiesP2 << endl;
   cout << linksP1 << endl;
   cout << linksP2 << endl;
 
-  // ------------------------------------------------------
+  // --------------------------------------------------------------------------
   //
   //  In-game interactions.
   //
-  //-------------------------------------------------------
+  // --------------------------------------------------------------------------
+
+  Controller game{};
+  game.runGame();
 }
 
 // Helper functions.
