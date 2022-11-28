@@ -1,12 +1,11 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -Wall -Werror -g -Werror=vla -MMD
 EXEC = raiinet
-OBJECTS = main.o controller.o
+OBJECTS = main.o controller.o player.o link.o ability.o 
 DEPENDS = ${OBJECTS:.o=.d}
 
 ${EXEC}: ${OBJECTS}
-# Remember to add -lX11 to the end of the linking line below for graphics.
-	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC} 
+	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC} -lX11
 	${MAKE} clean
 
 -include ${DEPENDS}

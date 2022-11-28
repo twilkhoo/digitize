@@ -7,7 +7,6 @@
 #include "controller.h"
 
 using std::cerr;
-using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
@@ -90,7 +89,6 @@ int main(int argc, char *argv[]) {
     // Check for abilities.
     // ------------------------------------------------------------------------
     if ((arg == "-ability1" || arg == "-ability2")) {
-
       // Check if there is a following cl-arg.
       if (argc <= i + 1) {
         cerr << "No ability string provided for " << arg << endl;
@@ -117,6 +115,7 @@ int main(int argc, char *argv[]) {
   cout << abilitiesP2 << endl;
   cout << linksP1 << endl;
   cout << linksP2 << endl;
+  cout << "----------------------------------------------------------" << endl;
 
   // --------------------------------------------------------------------------
   //
@@ -124,11 +123,16 @@ int main(int argc, char *argv[]) {
   //
   // --------------------------------------------------------------------------
 
-  Controller game{};
-  game.runGame();
+  Controller *game = new Controller(abilitiesP1, abilitiesP2, linksP1, linksP2);
+  game->runGame();
+  delete game;
 }
 
-// Helper functions.
+// ----------------------------------------------------------------------------
+//
+//  Helper Functions.
+//
+// ----------------------------------------------------------------------------
 
 // randomizedLinks returns a string representing the eight starting links in a
 // random order.

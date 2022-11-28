@@ -1,11 +1,21 @@
-#ifndef CONTROLLER_H_
-#define CONTROLLER_H_
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
 
-class Controller{
-    public:
-    Controller();
-    void runGame();
+#include <string>
+
+#include "player.h"
+// #include "board.h"
+
+class Controller {
+  Player* p1;
+  Player* p2;
+
+ public:
+  Controller(std::string abilitiesP1, std::string abilitiesP2,
+             std::string linksP1, std::string linksP2);
+  ~Controller();
+
+  void runGame();
 };
-
 
 #endif
