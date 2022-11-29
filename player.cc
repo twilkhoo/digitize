@@ -6,7 +6,6 @@
 
 #include "ability.h"
 #include "link.h"
-#include "board.h"
 
 using std::cout;
 using std::endl;

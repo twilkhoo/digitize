@@ -12,7 +12,7 @@
 class Player {
  private:
   int playerNum;
-  Board board;
+  Board& board;
 
  public:
   Player(std::string linkString, std::string abilityString, int playerNum_, Board& board_);

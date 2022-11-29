@@ -1,8 +1,11 @@
 #include "board.h"
 
 #include <vector>
+#include <iostream>
 
 Board::Board() {
+  std::cout << "creating board" << std::endl;
+
   for (int i = 0; i < length; i++) {
     std::vector<Cell*> curRow;
     for (int j = 0; j < length; j++) {
@@ -18,6 +21,7 @@ Board::Board() {
 }
 
 Board::~Board() {
+  std::cout << "deleting board" << std::endl;
   for (auto v : grid) {
     for (auto c : v) {
       delete c;
