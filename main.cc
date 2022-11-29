@@ -31,7 +31,6 @@ int main(int argc, char *argv[]) {
   // --------------------------------------------------------------------------
 
   bool graphics = false;
-  bool enhancements = false;
   string abilitiesP1 = defaultAbilities;
   string abilitiesP2 = defaultAbilities;
   string linksP1 = randomizedLinks(1);
@@ -44,11 +43,6 @@ int main(int argc, char *argv[]) {
     // Check for graphics.
     // ------------------------------------------------------------------------
     if (arg == "-graphics") graphics = true;
-
-    // ------------------------------------------------------------------------
-    // Check for enhancements.
-    // ------------------------------------------------------------------------
-    if (arg == "-enablebonus") enhancements = true;
 
     // ------------------------------------------------------------------------
     // Check for placement.
@@ -110,7 +104,6 @@ int main(int argc, char *argv[]) {
   }
 
   if (graphics) cout << "Graphics enabled" << endl;
-  if (enhancements) cout << "Enhancements enabled" << endl;
   cout << abilitiesP1 << endl;
   cout << abilitiesP2 << endl;
   cout << linksP1 << endl;

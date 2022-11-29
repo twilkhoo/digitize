@@ -7,13 +7,15 @@
 
 #include "ability.h"
 #include "link.h"
+#include "board.h"
 
 class Player {
  private:
   int playerNum;
+  Board board;
 
  public:
-  Player(std::string linkString, std::string abilityString, int playerNum_);
+  Player(std::string linkString, std::string abilityString, int playerNum_, Board& board_);
   ~Player();
 
   std::unordered_map<int, Ability*> intToAbility;

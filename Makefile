@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -Wall -Werror -g -Werror=vla -MMD
 EXEC = raiinet
-OBJECTS = main.o controller.o player.o link.o ability.o 
+OBJECTS = main.o controller.o board.o cell.o player.o link.o ability.o 
 DEPENDS = ${OBJECTS:.o=.d}
 
 ${EXEC}: ${OBJECTS}
