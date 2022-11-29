@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include <vector>
+#include <iostream>
 
 #include "cell.h"
 
@@ -14,6 +15,8 @@ class Board {
 
   Board();
   ~Board();
+
+  friend std::ostream& operator<<(std::ostream& out, Board& board);
 
 };
 
