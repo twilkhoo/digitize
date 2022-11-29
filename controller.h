@@ -4,9 +4,10 @@
 #include <string>
 
 #include "player.h"
-// #include "board.h"
+#include "board.h"
 
 class Controller {
+  Board* board;
   Player* p1;
   Player* p2;
 

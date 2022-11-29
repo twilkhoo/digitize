@@ -14,10 +14,12 @@ using std::string;
 
 Controller::Controller(std::string abilitiesP1, std::string abilitiesP2,
                        std::string linksP1, std::string linksP2)
-    : p1{new Player{linksP1, abilitiesP1, 1}},
-      p2{new Player{linksP2, abilitiesP2, 2}} {}
+    : board{new Board()},
+      p1{new Player{linksP1, abilitiesP1, 1, *board}},
+      p2{new Player{linksP2, abilitiesP2, 2, *board}} {}
 
 Controller::~Controller() {
+  delete board;
   delete p1;
   delete p2;
 }
@@ -50,6 +52,9 @@ void Controller::runGame() {
         try {
           // Implement code here for move, which throws an exception (string) if
           // something goes wrong and the move is not completed.
+
+          // curPlayer->charToLink[link]->move(dir);
+
           cout << "move link " << link << " in dir " << dir << endl;
           curPlayer == p1 ? curPlayer = p2 : curPlayer = p1;  // Switch players.
         } catch (string err) {
@@ -62,11 +67,12 @@ void Controller::runGame() {
     else if (command == "abilities") {
       for (int i = 1; i <= 5; i++) {
         cout << "Ability " << i << ": ";
-        cout << curPlayer->intToAbility[i]->getName() << endl;
-        cout << "Description: " << curPlayer->intToAbility[i]->getDescription()
+        cout << curPlayer->intToAbility[i]->getName();
+        if (curPlayer->intToAbility[i]->getIsUsed()) cout << "USED";
+        cout << endl
+             << "Description: " << curPlayer->intToAbility[i]->getDescription()
              << endl;
         cout << "Usage: " << curPlayer->intToAbility[i]->getUsage() << endl;
-        if (curPlayer->intToAbility[i]->getIsUsed()) cout << "USED" << endl;
         cout << endl;
       }
 
@@ -76,24 +82,21 @@ void Controller::runGame() {
     else if (command.substr(0, 7) == "ability") {
       int abilityNum = command[7] - '0';
       cout << abilityNum << endl;
-
       if ((command.length() != 9 && command.length() != 10) ||
           (abilityNum < 1 || abilityNum > 5))
-        readError = 1;
+        readError = 1; // Prevents segmentation faults.
       else {
         string requiredParams =
             curPlayer->intToAbility[abilityNum]->getParams();
-
         cout << requiredParams << endl;
 
         if (requiredParams == "char") {
           char linkChar = (command[8]);
           try {
-            int playerNum = curPlayer->getPlayerNum();
-            curPlayer->intToAbility[abilityNum]->useAbility(playerNum,
-                                                            linkChar);
+            curPlayer->intToAbility[abilityNum]->useAbility(linkChar);
           } catch (string err) {
             cout << err << endl;
+            readError = 1;
           }
         }
 
@@ -101,9 +104,8 @@ void Controller::runGame() {
           char linkChar1 = (command[8]);
           char linkChar2 = (command[9]);
           try {
-            int playerNum = curPlayer->getPlayerNum();
-            curPlayer->intToAbility[abilityNum]->useAbility(
-                playerNum, linkChar1, linkChar2);
+            curPlayer->intToAbility[abilityNum]->useAbility(linkChar1,
+                                                            linkChar2);
           } catch (string err) {
             cerr << err << endl;
             readError = 1;
@@ -111,12 +113,10 @@ void Controller::runGame() {
         }
 
         if (requiredParams == "intint") {
-          int int1 = (command[8]) - 'A';
-          int int2 = (command[9]) - 'A';
+          int x = (command[8]) - 'A';
+          int y = (command[9]) - 'A';
           try {
-            int playerNum = curPlayer->getPlayerNum();
-            curPlayer->intToAbility[abilityNum]->useAbility(playerNum, int1,
-                                                            int2);
+            curPlayer->intToAbility[abilityNum]->useAbility(x, y);
           } catch (string err) {
             cerr << err << endl;
             readError = 1;
