@@ -39,7 +39,7 @@ class Ability {
 
   Ability(const std::string& name_, const std::string& params_,
           const std::string& description_, const std::string& usage_,
-          const int& id_, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+          const int& id_, std::unordered_map<char, Link*> &charToLink_, Board& board_);
 
   virtual ~Ability() = default;
 };
@@ -53,7 +53,7 @@ class LinkBoost : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  LinkBoost(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  LinkBoost(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(char l);
 };
 
@@ -66,7 +66,7 @@ class Firewall : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  Firewall(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  Firewall(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(int x, int y);
 };
 
@@ -79,7 +79,7 @@ class Download : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  Download(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  Download(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(char l);
 };
 
@@ -92,7 +92,7 @@ class Polarize : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  Polarize(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  Polarize(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(char l);
 };
 
@@ -105,7 +105,7 @@ class Scan : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  Scan(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  Scan(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(char l);
 };
 
@@ -118,7 +118,7 @@ class LinkReborn : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  LinkReborn(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  LinkReborn(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(char l);
 };
 
@@ -131,7 +131,7 @@ class HighGround : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  HighGround(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  HighGround(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(int x, int y);
 };
 
@@ -144,7 +144,7 @@ class Portal : public Ability {
   void makeAbilityAbstract() { return; };
 
  public:
-  Portal(int i, std::unordered_map<char, Link*> &charToLink_, Board &board_);
+  Portal(int i, std::unordered_map<char, Link*> &charToLink_, Board& board_);
   void useAbility(char l1, char l2);
 };
 

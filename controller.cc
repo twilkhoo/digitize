@@ -129,6 +129,7 @@ void Controller::runGame() {
 
     else if (command == "board") {
       cout << "display board" << endl;
+      cout << *board << endl;
     }
 
     else if (command == "sequence") {

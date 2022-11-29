@@ -21,6 +21,7 @@ class Cell {
   Cell(int x_, int y_, bool isPort1_, bool isPort2_);
   ~Cell() = default;
 
+  char getAppearance();
 };
 
 #endif
