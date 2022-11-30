@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "player.h"
 #include "board.h"
+#include "player.h"
 
 class Controller {
   Board* board;

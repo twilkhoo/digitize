@@ -20,6 +20,8 @@ class Player {
 
   std::unordered_map<int, Ability*> intToAbility;
   std::unordered_map<char, Link*> charToLink;
+  static std::unordered_map<char, Link*> allCharToLink;
+
 
   int getPlayerNum();
 };

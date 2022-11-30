@@ -8,6 +8,8 @@ class Cell {
   
   char appearance = '.';
 
+  int owner = 0;
+
   bool isPort1;
   bool isPort2;
   bool isFirewall1;
@@ -22,6 +24,11 @@ class Cell {
   ~Cell() = default;
 
   char getAppearance();
+  void setAppearance (char letter);
+
+
+  int getOwner();
+  void setOwner(int owner_);
 };
 
 #endif
