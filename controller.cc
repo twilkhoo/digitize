@@ -1,6 +1,7 @@
 #include "controller.h"
 
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -8,7 +9,6 @@
 #include "player.h"
 
 using std::cerr;
-using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
@@ -58,14 +58,16 @@ void Controller::runGame() {
   Player *curPlayer = p1;
   bool switchPlayers = false;
 
+  std::istream *in = &std::cin;
+
   cout << endl;
   cout << "Welcome to..." << endl << endl;
   cout << "██████╗░░█████╗░██╗██╗███╗░░██╗███████╗████████╗\n██╔══██╗██╔══██╗█"
           "█║██║████╗░██║██╔════╝╚══██╔══╝\n██████╔╝███████║██║██║██╔██╗██║████"
           "█╗░░░░░██║░░░\n██╔══██╗██╔══██║██║██║██║╚████║██╔══╝░░░░░██║░░░\n██║"
           "░░██║██║░░██║██║██║██║░╚███║███████╗░░░██║░░░\n╚═╝░░╚═╝╚═╝░░╚═╝╚═╝╚═"
-          "╝╚═╝░░╚══╝╚══════╝░░░╚═╝░░░\n"
-       << endl; // AsciiArt from https://fsymbols.com/text-art/.
+          "╝╚═╝░░╚══╝╚══════╝░░░╚═╝░░░\n";  // AsciiArt from
+                                            // https://fsymbols.com/text-art/.
 
   while (true) {
     printLine();
@@ -87,7 +89,7 @@ void Controller::runGame() {
              "╗████╗██╔╝██║██╔██╗██║╚█████╗░\n██╔═══╝░╚═╝██║░░  ░░████╔═████║░█"
              "█║██║╚████║░╚═══██╗\n██║░░░░░███████╗  ░░╚██╔╝░╚██╔╝░██║██║░╚███║"
              "██████╔╝\n╚═╝░░░░░╚══════╝  ░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═════╝░\n"
-          << endl; // AsciiArt from https://fsymbols.com/text-art/.
+          << endl;  // AsciiArt from https://fsymbols.com/text-art/.
       cout << "Thanks for playing!" << endl;
       break;
     }
@@ -101,21 +103,23 @@ void Controller::runGame() {
              "╗████╗██╔╝██║██╔██╗██║╚█████╗░\n██╔═══╝░██╔══╝░░  ░░████╔═████║░█"
              "█║██║╚████║░╚═══██╗\n██║░░░░░███████╗  ░░╚██╔╝░╚██╔╝░██║██║░╚███║"
              "██████╔╝\n╚═╝░░░░░╚══════╝  ░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═════╝░\n"
-          << endl; // AsciiArt from https://fsymbols.com/text-art/.
+          << endl;  // AsciiArt from https://fsymbols.com/text-art/.
       cout << "Thanks for playing!" << endl;
       break;
     }
 
     cout << "Player " << curPlayer->getPlayerNum() << "'s turn." << endl;
-    cout << "Type help to see a list of available commands.\n" << endl;
+    cout << "Type help to see a list of available commands." << endl;
+    callBoard(curPlayer);
+    cout << endl;
 
-    // For organization, we will use getline instead of only cin. So, commands
-    // must be entered all on the same line. This is made clear in -help.
-    getline(cin, command);
+    // For organization, we will use getline instead of only input stream. So,
+    // commands must be entered on the same line. This is made clear in -help.
+    getline(*in, command);
     removeWhitespace(command);
 
-    // cout << "command given is: " << command << endl;  // Just to debug.
-    // cout << endl;
+    cout << "command given is: " << command << endl;  // Just to debug.
+    cout << endl;
 
     // ------------------------------------------------------------------------
     //  Move.
@@ -160,7 +164,6 @@ void Controller::runGame() {
              << "Description: " << curPlayer->intToAbility[i]->getDescription()
              << endl;
         cout << "Usage: " << curPlayer->intToAbility[i]->getUsage() << endl;
-        cout << endl;
       }
     }
 
@@ -218,57 +221,24 @@ void Controller::runGame() {
     //  Board.
     // ------------------------------------------------------------------------
     else if (command == "board") {
-      cout << endl;
-      std::ostringstream p1SummaryStream;
-      p1SummaryStream << "Player 1:" << endl
-                      << "Downloaded: " << p1->getDataCount() << "D, "
-                      << p1->getVirusCount() << "V" << endl
-                      << "Abilities: " << p1->getAbilitiesCount() << endl;
-
-      char curChar = 'a';
-      for (int i = 0; i < 8; i++) {
-        p1SummaryStream << curChar << ": ";
-        if (curPlayer->getPlayerNum() == 2 &&
-            Player::allCharToLink[curChar]->getIsHidden()) {
-          p1SummaryStream << "? ";
-        } else {
-          p1SummaryStream << Player::allCharToLink[curChar]->getName() << " ";
-        }
-        if (i == 3) p1SummaryStream << endl;
-        curChar++;
-      }
-      const string p1Summary{p1SummaryStream.str()};
-
-      std::ostringstream p2SummaryStream;
-      p2SummaryStream << "Player 2:" << endl
-                      << "Downloaded: " << p2->getDataCount() << "D, "
-                      << p2->getVirusCount() << "V" << endl
-                      << "Abilities: " << p2->getAbilitiesCount() << endl;
-
-      curChar = 'A';
-      for (int i = 0; i < 8; i++) {
-        p2SummaryStream << curChar << ": ";
-        if (curPlayer->getPlayerNum() == 1 &&
-            Player::allCharToLink[curChar]->getIsHidden()) {
-          p2SummaryStream << "? ";
-        } else {
-          p2SummaryStream << Player::allCharToLink[curChar]->getName() << " ";
-        }
-        if (i == 3) p2SummaryStream << endl;
-        curChar++;
-      }
-      const string p2Summary{p2SummaryStream.str()};
-
-      board->render(p1Summary, p2Summary);
+      callBoard(curPlayer);
     }
 
     // ------------------------------------------------------------------------
     //  Sequence.
     // ------------------------------------------------------------------------
-    else if (command == "sequence") {
-      // For this, consume a string which is a filename and execute the commands
-      // in that file.
-      cout << "sequence" << endl;
+    else if (command.substr(0, 8) == "sequence") {
+      string file = command.substr(8, command.length() - 8);
+      cout << file << endl;
+      // Check if file exists and is readable.
+      std::ifstream *infile = new std::ifstream{file};
+      if (!infile->good()) {
+        cerr << "No valid sequence file provided." << endl;
+        readError = 1;
+      } else {
+        cout << "all good" << endl;
+        in = infile;
+      }
     }
 
     // ------------------------------------------------------------------------
@@ -302,7 +272,7 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Quit.
     // ------------------------------------------------------------------------
-    else if (command == "quit" || cin.eof()) {
+    else if (command == "quit" || in->eof()) {
       cout << "Ending abruptly, " << endl << endl;
 
       cout << "████████╗██╗███████╗  ░██████╗░░█████╗░███╗░░░███╗███████╗\n╚══█"
@@ -311,7 +281,7 @@ void Controller::runGame() {
               "██╔══╝░░  ██║░░╚██╗██╔══██║██║╚██╔╝██║██╔══╝░░\n░░░██║░░░██║████"
               "███╗  ╚██████╔╝██║░░██║██║░╚═╝░██║███████╗\n░░░╚═╝░░░╚═╝╚══════╝"
               "  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝\n"
-           << endl; // AsciiArt from https://fsymbols.com/text-art/.
+           << endl;  // AsciiArt from https://fsymbols.com/text-art/.
 
       cout << "Thanks for playing!" << endl;
       break;
@@ -330,6 +300,7 @@ void Controller::runGame() {
       readError = false;
     }
   }
+  if (in != &std::cin) delete in;
 }
 
 void removeWhitespace(string &str) {
@@ -337,5 +308,52 @@ void removeWhitespace(string &str) {
 }
 
 void printLine() {
-  cout << "----------------------------------------------------------------\n";
+  cout << endl
+       << "----------------------------------------------------------------\n"
+       << endl;
+}
+
+void Controller::callBoard(Player *curPlayer) {
+  cout << endl;
+  std::ostringstream p1SummaryStream;
+  p1SummaryStream << "Player 1:" << endl
+                  << "Downloaded: " << p1->getDataCount() << "D, "
+                  << p1->getVirusCount() << "V" << endl
+                  << "Abilities: " << p1->getAbilitiesCount() << endl;
+
+  char curChar = 'a';
+  for (int i = 0; i < 8; i++) {
+    p1SummaryStream << curChar << ": ";
+    if (curPlayer->getPlayerNum() == 2 &&
+        Player::allCharToLink[curChar]->getIsHidden()) {
+      p1SummaryStream << "? ";
+    } else {
+      p1SummaryStream << Player::allCharToLink[curChar]->getName() << " ";
+    }
+    if (i == 3) p1SummaryStream << endl;
+    curChar++;
+  }
+  const string p1Summary{p1SummaryStream.str()};
+
+  std::ostringstream p2SummaryStream;
+  p2SummaryStream << "Player 2:" << endl
+                  << "Downloaded: " << p2->getDataCount() << "D, "
+                  << p2->getVirusCount() << "V" << endl
+                  << "Abilities: " << p2->getAbilitiesCount() << endl;
+
+  curChar = 'A';
+  for (int i = 0; i < 8; i++) {
+    p2SummaryStream << curChar << ": ";
+    if (curPlayer->getPlayerNum() == 1 &&
+        Player::allCharToLink[curChar]->getIsHidden()) {
+      p2SummaryStream << "? ";
+    } else {
+      p2SummaryStream << Player::allCharToLink[curChar]->getName() << " ";
+    }
+    if (i == 3) p2SummaryStream << endl;
+    curChar++;
+  }
+  const string p2Summary{p2SummaryStream.str()};
+
+  board->render(p1Summary, p2Summary);
 }

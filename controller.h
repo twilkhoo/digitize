@@ -19,6 +19,9 @@ class Controller {
   ~Controller();
 
   void runGame();
+
+  void callBoard(Player* curPlayer);
+
 };
 
 #endif
