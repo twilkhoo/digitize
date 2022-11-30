@@ -16,9 +16,11 @@ Controller::Controller(std::string abilitiesP1, std::string abilitiesP2,
                        std::string linksP1, std::string linksP2)
     : board{new Board()},
       p1{new Player{linksP1, abilitiesP1, 1, *board}},
-      p2{new Player{linksP2, abilitiesP2, 2, *board}} {}
+      p2{new Player{linksP2, abilitiesP2, 2, *board}},
+      textObserver{new TextObserver(board)} {}
 
 Controller::~Controller() {
+  delete textObserver;
   delete board;
   delete p1;
   delete p2;
@@ -57,7 +59,7 @@ void Controller::runGame() {
           // Implement code here for move, which throws an exception (string) if
           // something goes wrong and the move is not completed.
 
-          curPlayer->charToLink[link]->move(dir);
+          curPlayer->allCharToLink[link]->move(dir);
 
           cout << "move link " << link << " in dir " << dir << endl;
           curPlayer == p1 ? curPlayer = p2 : curPlayer = p1;  // Switch players.
@@ -133,7 +135,8 @@ void Controller::runGame() {
 
     else if (command == "board") {
       cout << "display board" << endl;
-      cout << *board << endl;
+      // cout << *board << endl;
+      board->render();
     }
 
     else if (command == "sequence") {

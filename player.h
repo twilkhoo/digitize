@@ -13,13 +13,13 @@ class Player {
  private:
   int playerNum;
   Board& board;
+  static bool deletedCharMap;
 
  public:
   Player(std::string linkString, std::string abilityString, int playerNum_, Board& board_);
   ~Player();
 
   std::unordered_map<int, Ability*> intToAbility;
-  std::unordered_map<char, Link*> charToLink;
   static std::unordered_map<char, Link*> allCharToLink;
 
 

@@ -29,6 +29,19 @@ Board::~Board() {
   }
 }
 
+int Board::getLength() {
+  return length;
+}
+
+char Board::getState(int row, int col) const {
+  return grid[row][col]->getAppearance();
+}
+
+void Board::render() {
+  notifyObservers();
+}
+
+
 std::ostream& operator<<(std::ostream& out, Board& board) {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
