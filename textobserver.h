@@ -11,6 +11,6 @@ class TextObserver : public Observer {
  public:
   TextObserver(Board* subject_);
   ~TextObserver();
-  void notify() override;
+  void notify(const std::string& p1Summary, const std::string& p2Summary) override;
 };
 #endif

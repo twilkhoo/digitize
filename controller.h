@@ -15,7 +15,7 @@ class Controller {
 
  public:
   Controller(std::string abilitiesP1, std::string abilitiesP2,
-             std::string linksP1, std::string linksP2);
+             std::string linksP1, std::string linksP2, bool graphics);
   ~Controller();
 
   void runGame();

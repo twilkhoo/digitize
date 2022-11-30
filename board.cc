@@ -4,8 +4,6 @@
 #include <iostream>
 
 Board::Board() {
-  std::cout << "creating board" << std::endl;
-
   for (int i = 0; i < length; i++) {
     std::vector<Cell*> curRow;
     for (int j = 0; j < length; j++) {
@@ -13,7 +11,6 @@ Board::Board() {
       bool isPort2 = false;
       if (i == 0 && (j == 3 || j == 4)) isPort1 = true;
       if (i == length - 1 && (j == 3 || j == 4)) isPort2 = true;
-
       curRow.push_back(new Cell(i, j, isPort1, isPort2));
     }
     grid.push_back(curRow);
@@ -21,7 +18,6 @@ Board::Board() {
 }
 
 Board::~Board() {
-  std::cout << "deleting board" << std::endl;
   for (auto v : grid) {
     for (auto c : v) {
       delete c;
@@ -37,8 +33,8 @@ char Board::getState(int row, int col) const {
   return grid[row][col]->getAppearance();
 }
 
-void Board::render() {
-  notifyObservers();
+void Board::render(const std::string& p1Summary, const std::string& p2Summary) {
+  notifyObservers(p1Summary, p2Summary);
 }
 
 

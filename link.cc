@@ -18,6 +18,7 @@ Link::Link(int strength_, Board& board_, int owner_, char letter_, bool isData_,
       board{board_},
       owner{owner_},
       letter{letter_},
+      isData{isData_},
       allCharToLink{allCharToLink_} {
   int rowToAdd;
 
@@ -39,6 +40,17 @@ void Link::setLocation(int row_, int col_) {
   row = row_;
   col = col_;
   board.grid[row][col]->setAppearance(letter);
+}
+
+std::string Link::getName() {
+  std::string str = "";
+  isData ? str += "D" : str += "V";
+  str += std::to_string(strength - '0');
+  return str;
+}
+
+bool Link::getIsHidden() {
+  return isHidden;
 }
 
 void Link::commonMove(char dir) {

@@ -1,5 +1,6 @@
 #include "subject.h"
 #include "observer.h"
+#include <string>
 
 void Subject::attach(Observer *o) { observers.emplace_back(o); }
 
@@ -12,6 +13,6 @@ void Subject::detach(Observer *o) {
   }
 }
 
-void Subject::notifyObservers() {
-  for (auto ob : observers) ob->notify();
+void Subject::notifyObservers(const std::string& p1Summary, const std::string& p2Summary) {
+  for (auto ob : observers) ob->notify(p1Summary, p2Summary);
 }

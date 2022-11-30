@@ -103,12 +103,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  system("clear");
+
   if (graphics) cout << "Graphics enabled" << endl;
   cout << abilitiesP1 << endl;
   cout << abilitiesP2 << endl;
   cout << linksP1 << endl;
   cout << linksP2 << endl;
-  cout << "----------------------------------------------------------" << endl;
+  cout << "----------------------------------------------------------------"
+       << endl;
 
   // --------------------------------------------------------------------------
   //
@@ -116,7 +119,8 @@ int main(int argc, char *argv[]) {
   //
   // --------------------------------------------------------------------------
 
-  Controller *game = new Controller(abilitiesP1, abilitiesP2, linksP1, linksP2);
+  Controller *game =
+      new Controller(abilitiesP1, abilitiesP2, linksP1, linksP2, graphics);
   game->runGame();
   delete game;
 }
