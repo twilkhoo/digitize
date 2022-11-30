@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include "subject.h"
 #include "cell.h"
@@ -19,7 +20,7 @@ class Board : public Subject {
 
   friend std::ostream& operator<<(std::ostream& out, Board& board);
 
-  void render();
+  void render(const std::string& p1Summary, const std::string& p2Summary);
 
   int getLength();
 

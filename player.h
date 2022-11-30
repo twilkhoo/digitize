@@ -14,6 +14,9 @@ class Player {
   int playerNum;
   Board& board;
   static bool deletedCharMap;
+  int dataCount = 0;
+  int virusCount = 0;
+  int abilitiesCount = 5;
 
  public:
   Player(std::string linkString, std::string abilityString, int playerNum_, Board& board_);
@@ -22,8 +25,10 @@ class Player {
   std::unordered_map<int, Ability*> intToAbility;
   static std::unordered_map<char, Link*> allCharToLink;
 
-
   int getPlayerNum();
+  int getDataCount();
+  int getVirusCount();
+  int getAbilitiesCount();
 };
 
 #endif
