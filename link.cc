@@ -53,8 +53,11 @@ void Link::commonMove(char dir) {
   int desiredCol = col;
   if (dir == 'u') desiredRow = row - speed;
   if (dir == 'd') desiredRow = row + speed;
-  if (dir == 'l') desiredCol = row - speed;
-  if (dir == 'r') desiredCol = row + speed;
+  if (dir == 'l') desiredCol = col - speed;
+  if (dir == 'r') desiredCol = col + speed;
+
+  cout << "Current: " << row << " " << col << endl;
+  cout << "Desired: " << desiredRow << " " << desiredCol << endl;
 
   // Ensure desired location is in bounds.
   bool invalidDirection = false;
@@ -69,9 +72,6 @@ void Link::commonMove(char dir) {
     invalidDirection = true;
   if (invalidDirection)
     throw "Invalid movement, link moves onto your own server port.";
-
-  cout << "Current: " << row << " " << col << endl;
-  cout << "Desired: " << desiredRow << " " << desiredCol << endl;
 
   // Ensure desired location is not onto your own link.
   if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1) ||
@@ -93,7 +93,6 @@ void Link::commonMove(char dir) {
   // Moving into an opponent firewall.
 
   // Moving onto an opponent HighGround (only if opponent link is present).
-
 }
 
 // ----------------------------------------------------------------------------
