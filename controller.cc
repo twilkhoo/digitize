@@ -48,16 +48,20 @@ void Controller::runGame() {
       char dir = command[5];
       if (command.length() != 6) {
         readError = true;
+      } else if ((curPlayer == p1 && !(link >= 'a' && link <= 'h')) ||
+                 (curPlayer == p2 && !(link >= 'A' && link <= 'H'))) {
+        cerr << "You can only move your own link." << endl;
+        readError = true;  // Prevents segmentation faults.
       } else {
         try {
           // Implement code here for move, which throws an exception (string) if
           // something goes wrong and the move is not completed.
 
-          // curPlayer->charToLink[link]->move(dir);
+          curPlayer->charToLink[link]->move(dir);
 
           cout << "move link " << link << " in dir " << dir << endl;
           curPlayer == p1 ? curPlayer = p2 : curPlayer = p1;  // Switch players.
-        } catch (string err) {
+        } catch (char const* err) {
           cerr << err << endl;
           readError = true;
         }
@@ -84,7 +88,7 @@ void Controller::runGame() {
       cout << abilityNum << endl;
       if ((command.length() != 9 && command.length() != 10) ||
           (abilityNum < 1 || abilityNum > 5))
-        readError = 1; // Prevents segmentation faults.
+        readError = 1;  // Prevents segmentation faults.
       else {
         string requiredParams =
             curPlayer->intToAbility[abilityNum]->getParams();

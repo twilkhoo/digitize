@@ -11,6 +11,8 @@ using std::cout;
 using std::endl;
 using std::string;
 
+std::unordered_map<char, Link*> Player::allCharToLink;
+
 Player::Player(string linkString, string abilityString, int playerNum_, Board& board_)
     : playerNum{playerNum_}, board{board_} {
   cout << "Creating Player " << playerNum << endl;
@@ -85,15 +87,17 @@ Player::Player(string linkString, string abilityString, int playerNum_, Board& b
   len = (int)linkString.length();
   for (int i = 0; i < len; i += 2) {
     if (linkString[i] == 'V') {  // Create a virus object.
-      Virus* virusObject = new Virus(linkString[i + 1], board);
+      Virus* virusObject = new Virus(linkString[i + 1], board, playerNum, curLetter, false, allCharToLink);
       cout << "Creating virus: " << virusObject << endl;
       cout << "Mapping: " << curLetter << " => " << virusObject << endl;
       charToLink.insert(std::pair<char, Link*>{curLetter, virusObject});
+      allCharToLink.insert(std::pair<char, Link*>{curLetter, virusObject});
     } else {  // Create a data object.
-      Data* dataObject = new Data(linkString[i + 1], board);
+      Data* dataObject = new Data(linkString[i + 1], board, playerNum, curLetter, true, allCharToLink);
       cout << "Creating data: " << dataObject << endl;
       cout << "Mapping: " << curLetter << " => " << dataObject << endl;
       charToLink.insert(std::pair<char, Link*>{curLetter, dataObject});
+      allCharToLink.insert(std::pair<char, Link*>{curLetter, dataObject});
     }
     curLetter++;
   }
