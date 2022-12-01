@@ -53,6 +53,10 @@ bool Link::getIsHidden() {
   return isHidden;
 }
 
+int Link::getOwner() {
+	return owner;
+}
+
 void Link::commonMove(char dir) {
   dir = tolower(dir);
 

@@ -1,7 +1,7 @@
 #include "board.h"
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 Board::Board() {
   for (int i = 0; i < length; i++) {
@@ -25,18 +25,21 @@ Board::~Board() {
   }
 }
 
-int Board::getLength() {
-  return length;
-}
+int Board::getLength() { return length; }
 
 char Board::getState(int row, int col) const {
   return grid[row][col]->getAppearance();
 }
 
-void Board::render(const std::string& p1Summary, const std::string& p2Summary) {
-  notifyObservers(p1Summary, p2Summary);
+void Board::render(const std::string& p1Summary, const std::string& p2Summary,
+                   const std::string& p1Downloaded,
+                   const std::string& p2Downloaded,
+                   std::unordered_map<char, std::string>& allLinkNames,
+                   const std::string& p1Abilities,
+                   const std::string& p2Abilities) {
+  notifyObservers(p1Summary, p2Summary, p1Downloaded, p2Downloaded,
+                  allLinkNames, p1Abilities, p2Abilities);
 }
-
 
 std::ostream& operator<<(std::ostream& out, Board& board) {
   for (int i = 0; i < 8; i++) {
@@ -47,5 +50,3 @@ std::ostream& operator<<(std::ostream& out, Board& board) {
   }
   return out;
 }
-
-

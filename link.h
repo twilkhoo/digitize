@@ -27,6 +27,7 @@ class Link {
   void setLocation(int row_, int col_);
   std::string getName();
   bool getIsHidden();
+	int getOwner();
 
   Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
   virtual ~Link() = default;
