@@ -53,6 +53,10 @@ bool Link::getIsHidden() {
   return isHidden;
 }
 
+int Link::getOwner() {
+	return owner;
+}
+
 void Link::commonMove(char dir) {
   dir = tolower(dir);
 
@@ -105,6 +109,11 @@ void Link::commonMove(char dir) {
   // Moving into an opponent firewall.
 
   // Moving onto an opponent HighGround (only if opponent link is present).
+
+
+
+	// Update that link's position if the move was successful.
+	setLocation(desiredRow, desiredCol);
 }
 
 // ----------------------------------------------------------------------------

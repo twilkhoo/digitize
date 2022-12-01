@@ -23,14 +23,13 @@ void printLine();
 // ----------------------------------------------------------------------------
 
 Controller::Controller(std::string abilitiesP1, std::string abilitiesP2,
-                       std::string linksP1, std::string linksP2, bool graphics)
+                       std::string linksP1, std::string linksP2, bool graphics_)
     : board{new Board()},
       p1{new Player{linksP1, abilitiesP1, 1, *board}},
       p2{new Player{linksP2, abilitiesP2, 2, *board}},
-      textObserver{new TextObserver(board)} {
-  if (graphics) {
-    cout << "Graphics enabled." << endl;
-  }
+      textObserver{new TextObserver(board)},
+      graphics{graphics_} {
+  if (graphics) graphicsObserver = new GraphicsObserver(board);
 }
 
 // ----------------------------------------------------------------------------
@@ -41,6 +40,9 @@ Controller::Controller(std::string abilitiesP1, std::string abilitiesP2,
 
 Controller::~Controller() {
   delete textObserver;
+  if (graphics) {
+    delete graphicsObserver;
+  }
   delete board;
   delete p1;
   delete p2;
@@ -90,7 +92,7 @@ void Controller::runGame() {
              "█║██║╚████║░╚═══██╗\n██║░░░░░███████╗  ░░╚██╔╝░╚██╔╝░██║██║░╚███║"
              "██████╔╝\n╚═╝░░░░░╚══════╝  ░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═════╝░\n"
           << endl;  // AsciiArt from https://fsymbols.com/text-art/.
-      cout << "Thanks for playing!" << endl;
+      cout << "Thanks for playing!\n" << endl;
       break;
     }
 
@@ -104,7 +106,7 @@ void Controller::runGame() {
              "█║██║╚████║░╚═══██╗\n██║░░░░░███████╗  ░░╚██╔╝░╚██╔╝░██║██║░╚███║"
              "██████╔╝\n╚═╝░░░░░╚══════╝  ░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝╚═════╝░\n"
           << endl;  // AsciiArt from https://fsymbols.com/text-art/.
-      cout << "Thanks for playing!" << endl;
+      cout << "Thanks for playing!\n" << endl;
       break;
     }
 
@@ -283,7 +285,7 @@ void Controller::runGame() {
               "  ░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝\n"
            << endl;  // AsciiArt from https://fsymbols.com/text-art/.
 
-      cout << "Thanks for playing!" << endl;
+      cout << "Thanks for playing!\n" << endl;
       break;
     }
 
@@ -315,6 +317,7 @@ void printLine() {
 
 void Controller::callBoard(Player *curPlayer) {
   cout << endl;
+  // Summary for player 1- textObserver.
   std::ostringstream p1SummaryStream;
   p1SummaryStream << "Player 1:" << endl
                   << "Downloaded: " << p1->getDataCount() << "D, "
@@ -335,6 +338,7 @@ void Controller::callBoard(Player *curPlayer) {
   }
   const string p1Summary{p1SummaryStream.str()};
 
+  // Summary for player 2- textObserver.
   std::ostringstream p2SummaryStream;
   p2SummaryStream << "Player 2:" << endl
                   << "Downloaded: " << p2->getDataCount() << "D, "
@@ -355,5 +359,36 @@ void Controller::callBoard(Player *curPlayer) {
   }
   const string p2Summary{p2SummaryStream.str()};
 
-  board->render(p1Summary, p2Summary);
+  // Player 1 downloaded links summary- graphicsObserver.
+  std::ostringstream p1DownloadedStream;
+  p1DownloadedStream << "Downloaded: " << p1->getDataCount() << "D, "
+                     << p1->getVirusCount() << "V";
+  const string p1Downloaded{p1DownloadedStream.str()};
+
+  // Player 2 downloaded links summary- graphicsObserver.
+  std::ostringstream p2DownloadedStream;
+  p2DownloadedStream << "Downloaded: " << p2->getDataCount() << "D, "
+                     << p2->getVirusCount() << "V";
+  const string p2Downloaded{p2DownloadedStream.str()};
+
+  // Map to get link names from link characters- graphicsObserver.
+  std::unordered_map<char, string> allLinkNames;
+  std::unordered_map<char, Link *>::iterator it;
+
+  for (it = Player::allCharToLink.begin(); it != Player::allCharToLink.end();
+       it++) {
+    string idStr;
+    if ((curPlayer->getPlayerNum() == 1 && it->second->getOwner() == 2 &&
+         it->second->getIsHidden()) ||
+        (curPlayer->getPlayerNum() == 2 && it->second->getOwner() == 1 &&
+         it->second->getIsHidden()))
+      idStr = "?";
+    else
+      idStr = it->second->getName();
+    allLinkNames.insert(std::pair<char, string>{it->first, idStr});
+  }
+
+  board->render(p1Summary, p2Summary, p1Downloaded, p2Downloaded, allLinkNames,
+                std::to_string(p1->getAbilitiesCount()),
+                std::to_string(p2->getAbilitiesCount()));
 }
