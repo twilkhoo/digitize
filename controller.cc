@@ -120,8 +120,8 @@ void Controller::runGame() {
     getline(*in, command);
     removeWhitespace(command);
 
-    cout << "command given is: " << command << endl;  // Just to debug.
-    cout << endl;
+    // cout << "command given is: " << command << endl;  // Just to debug.
+    // cout << endl;
 
     // ------------------------------------------------------------------------
     //  Move.
@@ -157,15 +157,16 @@ void Controller::runGame() {
     //  Abilities (list all).
     // ------------------------------------------------------------------------
     else if (command == "abilities") {
-      cout << endl;
+      printLine();
       for (int i = 1; i <= 5; i++) {
         cout << "Ability " << i << ": ";
         cout << curPlayer->intToAbility[i]->getName();
-        if (curPlayer->intToAbility[i]->getIsUsed()) cout << "USED";
+        if (curPlayer->intToAbility[i]->getIsUsed()) cout << " (USED)";
         cout << endl
              << "Description: " << curPlayer->intToAbility[i]->getDescription()
              << endl;
         cout << "Usage: " << curPlayer->intToAbility[i]->getUsage() << endl;
+        if (i != 5) cout << endl;
       }
     }
 
@@ -175,7 +176,7 @@ void Controller::runGame() {
     else if (command.substr(0, 7) == "ability") {
       cout << endl;
       int abilityNum = command[7] - '0';
-      cout << abilityNum << endl;
+      // cout << abilityNum << endl;
       if ((command.length() != 9 && command.length() != 10) ||
           (abilityNum < 1 || abilityNum > 5))
         readError = 1;  // Prevents segmentation faults.
@@ -187,7 +188,7 @@ void Controller::runGame() {
         if (requiredParams == "char") {
           char linkChar = (command[8]);
           try {
-            curPlayer->intToAbility[abilityNum]->useAbility(linkChar);
+            curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), linkChar);
           } catch (char const *err) {
             cout << err << endl;
             readError = 1;
@@ -198,7 +199,7 @@ void Controller::runGame() {
           char linkChar1 = (command[8]);
           char linkChar2 = (command[9]);
           try {
-            curPlayer->intToAbility[abilityNum]->useAbility(linkChar1,
+            curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), linkChar1,
                                                             linkChar2);
           } catch (char const *err) {
             cerr << err << endl;
@@ -210,7 +211,7 @@ void Controller::runGame() {
           int row = (command[8]) - 'A';
           int col = (command[9]) - 'A';
           try {
-            curPlayer->intToAbility[abilityNum]->useAbility(row, col);
+            curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), row, col);
           } catch (char const *err) {
             cerr << err << endl;
             readError = 1;
@@ -247,7 +248,7 @@ void Controller::runGame() {
     //  Help.
     // ------------------------------------------------------------------------
     else if (command == "help") {
-      cout << endl;
+      printLine();
       cout << "All of the following commands must be entered on the same line. "
               "Pressing enter signifies using a command.\n"
            << endl;
@@ -258,7 +259,7 @@ void Controller::runGame() {
       cout << "abilities\nDisplays the ability cards you have, with an ID "
               "(from 1-5), whether or not it has been used, and it's usage.\n"
            << endl;
-      cout << "move <N>\nUses the ability card with ID N. Some abilities "
+      cout << "ability <N>\nUses the ability card with ID N. Some abilities "
               "require extra information to be entered, type abilities to "
               "learn the correct usage of all of your abilities.\n"
            << endl;
@@ -268,7 +269,7 @@ void Controller::runGame() {
       cout << "sequence <file>\nExecutes the sequence of commands found in "
               "file, then exits the game.\n"
            << endl;
-      cout << "quit\nExits the game.\n" << endl;
+      cout << "quit\nExits the game." << endl;
     }
 
     // ------------------------------------------------------------------------

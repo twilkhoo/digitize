@@ -48,9 +48,14 @@ LinkBoost::LinkBoost(int i, std::unordered_map<char, Link*>& charToLink_,
               "ability " + std::to_string(i) + " <personalLinkChar>", i,
               charToLink_, board_) {}
 
-void LinkBoost::useAbility(char l) {
+void LinkBoost::useAbility(int player, char l) {
+  if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
+  if ((l >= 'a' && l <= 'h' && player == 2) ||
+      (l >= 'A' && l <= 'H' && player == 1))
+    throw "You can only boost your own link.";
   charToLink[l]->boost();
-  cout << "Linkboost useability called with link char " << l << endl;
+  isUsed = true;
+  cout << "LinkBoost used with link " << l << endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -66,7 +71,7 @@ Firewall::Firewall(int i, std::unordered_map<char, Link*>& charToLink_,
               "ability " + std::to_string(i) + " <rowNum> <colNum>", i,
               charToLink_, board_){};
 
-void Firewall::useAbility(int x, int y) {
+void Firewall::useAbility(int player, int x, int y) {
   cout << "Firewall useability called with int x " << x << " and y " << y
        << endl;
 }
@@ -81,7 +86,7 @@ Download::Download(int i, std::unordered_map<char, Link*>& charToLink_,
               "ability " + std::to_string(i) + " <opponentLinkChar>", i,
               charToLink_, board_){};
 
-void Download::useAbility(char l) {
+void Download::useAbility(int player, char l) {
   cout << "Download useability called with link char " << l << endl;
 }
 
@@ -97,7 +102,7 @@ Polarize::Polarize(int i, std::unordered_map<char, Link*>& charToLink_,
               "ability " + std::to_string(i) + " <linkChar>", i, charToLink_,
               board_){};
 
-void Polarize::useAbility(char l) {
+void Polarize::useAbility(int player, char l) {
   cout << "Polarize useability called with link char " << l << endl;
 }
 
@@ -110,7 +115,7 @@ Scan::Scan(int i, std::unordered_map<char, Link*>& charToLink_, Board& board_)
               "ability " + std::to_string(i) + " <linkChar>", i, charToLink_,
               board_){};
 
-void Scan::useAbility(char l) {
+void Scan::useAbility(int player, char l) {
   cout << "Scan useability called with link char " << l << endl;
 }
 
@@ -127,7 +132,7 @@ LinkReborn::LinkReborn(int i, std::unordered_map<char, Link*>& charToLink_,
           "ability " + std::to_string(i) + " <personalLinkChar>", i,
           charToLink_, board_){};
 
-void LinkReborn::useAbility(char l) {
+void LinkReborn::useAbility(int player, char l) {
   cout << "LinkReborn useability called with link char " << l << endl;
 }
 
@@ -146,7 +151,7 @@ HighGround::HighGround(int i, std::unordered_map<char, Link*>& charToLink_,
                   " <rowNum> <colNum>, 2 <= rowNum <= 5",
               i, charToLink_, board_){};
 
-void HighGround::useAbility(int x, int y) {
+void HighGround::useAbility(int player, int x, int y) {
   cout << "HighGround useability called with int x " << x << " and y " << y
        << endl;
 }
@@ -163,7 +168,7 @@ Portal::Portal(int i, std::unordered_map<char, Link*>& charToLink_,
                   " <personalLinkChar1> <personalLinkChar2>",
               i, charToLink_, board_){};
 
-void Portal::useAbility(char l1, char l2) {
+void Portal::useAbility(int player, char l1, char l2) {
   cout << "Portal useability called with link char l1 " << l1 << " and l2 "
        << l2 << endl;
 }
