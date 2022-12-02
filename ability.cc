@@ -49,6 +49,7 @@ LinkBoost::LinkBoost(int i, std::unordered_map<char, Link*>& charToLink_,
               charToLink_, board_) {}
 
 void LinkBoost::useAbility(char l) {
+  charToLink[l]->boost();
   cout << "Linkboost useability called with link char " << l << endl;
 }
 

@@ -135,3 +135,7 @@ Virus::Virus(int strength_, Board& board_, int owner_, char letter_,
     : Link(strength_, board_, owner_, letter_, isData_, allCharToLink_) {}
 
 void Virus::move(char dir) { commonMove(dir); }
+
+void Link::boost() {
+  speed = 2;
+}
