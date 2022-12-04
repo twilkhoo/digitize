@@ -53,6 +53,8 @@ void LinkBoost::useAbility(int player, char l) {
   if ((l >= 'a' && l <= 'h' && player == 2) ||
       (l >= 'A' && l <= 'H' && player == 1))
     throw "You can only boost your own link.";
+  if (getIsUsed())
+    throw "This ability has already been used.";
   charToLink[l]->boost();
   isUsed = true;
   cout << "LinkBoost used with link " << l << endl;
