@@ -73,7 +73,7 @@ int Link::battle(Link & l2) {
   }
 }
 
-void Link::download() { Downloaded = true; }
+void Link::download() { Downloaded = true; reveal();}
 
 bool Link::isVirus() { return !isData; }
 
@@ -107,10 +107,20 @@ void Link::commonMove(char dir) {
 
   // Ensure desired location is in bounds.
   bool invalidDirection = false;
-  if (desiredCol < 0 || desiredCol > 7) invalidDirection = true;
-  if ((owner == 1 && desiredRow < 0) || (owner == 2 && desiredRow > 7))
+  if ((owner == 1 && desiredRow < 0) || (owner == 2 && desiredRow > 7) || (desiredCol > 7) || (desiredCol < 0))
     invalidDirection = true;
   if (invalidDirection) throw "Invalid movement, link goes out of bounds.";
+
+  
+  // Moving across the opponent's edge.
+
+  if ((owner == 1 && desiredRow > 7) || (owner == 2 && desiredRow < 0)) {
+    download();
+    board.grid[row][col]->setAppearance('.');
+    board.grid[row][col]->setOwner(0);
+    cout << "Moved across edge, downloaded by opponent" << endl;
+    return;
+  }
 
   // Ensure desired location does not move onto one's own server ports.
   if ((owner == 1 && desiredRow == 0 && (desiredCol == 3 || desiredCol == 4)) ||
@@ -154,7 +164,7 @@ void Link::commonMove(char dir) {
       board.grid[row][col]->setAppearance('.');
       board.grid[row][col]->setOwner(0);
     }
-    
+
     return;
   }
   
@@ -165,9 +175,6 @@ void Link::commonMove(char dir) {
     board.grid[desiredRow][desiredCol]->setAppearance(letter);
     board.grid[desiredRow][desiredCol]->setOwner(owner);
   }
-
-  // Moving across the opponent's edge.
-
 
   // Moving into an opponent firewall.
 
