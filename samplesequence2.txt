@@ -1,0 +1,13 @@
+ability 1 d
+move d d
+move D u
+move d d
+ability 1 E
+
+move E d
+move E u
+
+move d d
+move E u
+
+move e d
