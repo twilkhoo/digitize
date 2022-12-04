@@ -1,0 +1,17 @@
+move a d
+move A u
+move a d
+move A u
+move a d
+move A r
+move a d
+move A r
+move a d
+move A r
+move a d
+move A r
+move a D
+move A r
+move a d
+move A r
+
