@@ -105,6 +105,14 @@ Player::Player(string linkString, string abilityString, int playerNum_,
   }
 }
 
+void Player::increaseData() { dataCount++; }
+
+void Player::increaseVirus() { virusCount++; }
+
+void Player::resetData() { dataCount = 0; }
+
+void Player::resetVirus() { virusCount = 0; }
+
 Player::~Player() {
   for (std::unordered_map<int, Ability*>::iterator it = intToAbility.begin();
        it != intToAbility.end(); ++it) {

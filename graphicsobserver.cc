@@ -2,6 +2,7 @@
 
 #include "board.h"
 #include "xwindow.h"
+#include <sstream>
 
 GraphicsObserver::GraphicsObserver(Board* subject_) : subject{subject_} {
   subject->attach(this);
@@ -14,10 +15,21 @@ void GraphicsObserver::notify(
     const std::string& p1Downloaded, const std::string& p2Downloaded,
     std::unordered_map<char, std::string>& allLinkNames,
     const std::string& p1Abilities, const std::string& p2Abilities) {
-  w.drawString(20, 40, "Player 1:", Xwindow::White);
-  w.drawString(20, 60, p1Downloaded, Xwindow::White);
-  w.drawString(20, 80, "Abilities: " + p1Abilities, Xwindow::White);
 
+  w.fillRectangle(20, 0, 400, 105, Xwindow::Black);
+  w.drawString(20, 20, "Player 1:", Xwindow::White);
+  w.drawString(20, 40, p1Downloaded, Xwindow::White);
+  w.drawString(20, 60, "Abilities: " + p1Abilities, Xwindow::White);
+  std::ostringstream summaryline1;
+  std::ostringstream summaryline2;
+  for (char ch = 'a'; ch <= 'd'; ch++) {
+    summaryline1 << ch << ": " << allLinkNames[ch] << " ";
+  }
+  for (char ch = 'e'; ch <= 'h'; ch++) {
+    summaryline2 << ch << ": " << allLinkNames[ch] << " ";
+  }
+  w.drawString(20, 80, summaryline1.str(), Xwindow::White);
+  w.drawString(20, 100, summaryline2.str(), Xwindow::White);
   char curChar;
   std::string displayStr;
   for (int row = 0; row < subject->getLength(); row++) {
@@ -86,8 +98,18 @@ void GraphicsObserver::notify(
       }
     }
   }
-
-  w.drawString(20, 620, "Player 2:", Xwindow::White);
-  w.drawString(20, 640, p2Downloaded, Xwindow::White);
-  w.drawString(20, 660, "Abilities: " + p2Abilities, Xwindow::White);
+  w.fillRectangle(20, 600, 400, 105, Xwindow::Black);
+  w.drawString(20, 600, "Player 2:", Xwindow::White);
+  w.drawString(20, 620, p2Downloaded, Xwindow::White);
+  w.drawString(20, 640, "Abilities: " + p2Abilities, Xwindow::White);
+  std::ostringstream summaryline1b;
+  std::ostringstream summaryline2b;
+  for (char ch = 'A'; ch <= 'D'; ch++) {
+    summaryline1b << ch << ": " << allLinkNames[ch] << " ";
+  }
+  for (char ch = 'E'; ch <= 'H'; ch++) {
+    summaryline2b << ch << ": " << allLinkNames[ch] << " ";
+  }
+  w.drawString(20, 660, summaryline1b.str(), Xwindow::White);
+  w.drawString(20, 680, summaryline2b.str(), Xwindow::White);
 }

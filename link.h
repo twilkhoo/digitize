@@ -5,7 +5,6 @@
 #include <string>
 #include "board.h"
 
-
 class Link {
  protected:
   int strength;
@@ -16,6 +15,7 @@ class Link {
   std::unordered_map<char, Link*>& allCharToLink;
 
   bool isHidden = true;
+  bool Downloaded = false;
   int row;
   int col;
   int speed = 1;
@@ -29,6 +29,11 @@ class Link {
   bool getIsHidden();
 	int getOwner();
   void boost();
+  int battle(Link & l2);
+  void download();
+  void reveal();
+  bool isVirus();
+  bool isDownloaded();
 
   Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
   virtual ~Link() = default;
