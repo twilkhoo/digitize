@@ -1,7 +1,5 @@
 #include "graphicsobserver.h"
 
-#include <sstream>
-
 #include "board.h"
 #include "xwindow.h"
 
