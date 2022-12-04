@@ -118,6 +118,8 @@ Scan::Scan(int i, std::unordered_map<char, Link*>& charToLink_, Board& board_)
               board_){};
 
 void Scan::useAbility(int player, char l) {
+  charToLink[l]->getIsHidden(true); //
+  isUsed = true; //
   cout << "Scan useability called with link char " << l << endl;
 }
 
