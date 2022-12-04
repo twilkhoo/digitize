@@ -42,6 +42,10 @@ void Link::setLocation(int row_, int col_) {
   board.grid[row][col]->setAppearance(letter);
 }
 
+void Link::boost() {
+  speed = 2;
+}
+
 std::string Link::getName() {
   std::string str = "";
   isData ? str += "D" : str += "V";
@@ -57,8 +61,34 @@ int Link::getOwner() {
 	return owner;
 }
 
+// Battle Command
+
+int Link::battle(Link & l2) {
+  if (getIsHidden()) { reveal(); }
+  if (l2.getIsHidden()) { l2.reveal(); }
+  if (strength >= l2.strength) {
+    return owner;
+  } else {
+    return l2.owner;
+  }
+}
+
+void Link::download() { Downloaded = true; }
+
+bool Link::isVirus() { return !isData; }
+
+bool Link::isDownloaded() { return Downloaded; }
+
+void Link::reveal() {
+  isHidden = false;
+}
+
 void Link::commonMove(char dir) {
   dir = tolower(dir);
+
+  // Check if link is already downloaded
+
+  if (Downloaded) { throw "Link already downloaded by enemy."; }
 
   // Ensure the dir char is valid.
   if (dir != 'u' && dir != 'd' && dir != 'l' && dir != 'r')
@@ -94,17 +124,50 @@ void Link::commonMove(char dir) {
       (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2))
     throw "Invalid movement, link moves onto your own link.";
 
+  // Moving into an opponent's server port.
+
+  if (((desiredRow == 0 && (desiredCol == 3 || desiredCol == 4)) && (owner = 2)) || 
+      ((desiredRow == 7 && (desiredCol == 3 || desiredCol == 4)) && (owner = 1))) {
+    allCharToLink[board.grid[row][col]->getAppearance()]->download();
+    board.grid[row][col]->setAppearance('.');
+    board.grid[row][col]->setOwner(0);
+    return;
+  } 
+
+
+  // Moving onto an enemy link. (Battle)
+
+  if (board.grid[desiredRow][desiredCol]->getAppearance() != '.' && board.grid[desiredRow][desiredCol]->getOwner() != 0) {
+    cout << "Battle initiated: " << letter << " vs. " << board.grid[desiredRow][desiredCol]->getAppearance() << endl;
+    int winner = battle(*allCharToLink[board.grid[desiredRow][desiredCol]->getAppearance()]);
+    if (winner == owner) {
+      cout << "Player " << winner << " wins! Downloading enemy link: " << board.grid[desiredRow][desiredCol]->getAppearance() << endl;
+      allCharToLink[board.grid[desiredRow][desiredCol]->getAppearance()]->download();
+      board.grid[desiredRow][desiredCol]->setAppearance(letter);
+      board.grid[row][col]->setAppearance('.');
+      board.grid[row][col]->setOwner(0);
+      setLocation(desiredRow, desiredCol);
+      board.grid[desiredRow][desiredCol]->setOwner(winner);
+    } else {
+      cout << "Player " << winner << " wins! Link downloaded by enemy: " << letter << endl;
+      download();
+      board.grid[row][col]->setAppearance('.');
+      board.grid[row][col]->setOwner(0);
+    }
+    
+    return;
+  }
+  
   // Moving onto an empty square.
   if (board.grid[desiredRow][desiredCol]->getOwner() == 0) {
     board.grid[row][col]->setAppearance('.');
     board.grid[row][col]->setOwner(0);
     board.grid[desiredRow][desiredCol]->setAppearance(letter);
-    board.grid[desiredRow][desiredCol]->setOwner(1);
+    board.grid[desiredRow][desiredCol]->setOwner(owner);
   }
 
   // Moving across the opponent's edge.
 
-  // Moving into an opponent's server port.
 
   // Moving into an opponent firewall.
 
@@ -114,10 +177,6 @@ void Link::commonMove(char dir) {
 
 	// Update that link's position if the move was successful.
 	setLocation(desiredRow, desiredCol);
-}
-
-void Link::boost() {
-  speed = 2;
 }
 
 // ----------------------------------------------------------------------------
@@ -130,6 +189,7 @@ Data::Data(int strength_, Board& board_, int owner_, char letter_, bool isData_,
 
 void Data::move(char dir) { commonMove(dir); }
 
+
 // ----------------------------------------------------------------------------
 // Virus class
 // ----------------------------------------------------------------------------
@@ -139,5 +199,3 @@ Virus::Virus(int strength_, Board& board_, int owner_, char letter_,
     : Link(strength_, board_, owner_, letter_, isData_, allCharToLink_) {}
 
 void Virus::move(char dir) { commonMove(dir); }
-
-

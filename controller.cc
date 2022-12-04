@@ -78,6 +78,31 @@ void Controller::runGame() {
       switchPlayers = false;
     }
 
+    // Update Downloads.
+    p2->resetData();
+    p2->resetVirus();
+    for (char c = 'a'; c <= 'h'; c++) {
+      if (Player::allCharToLink[c]->isDownloaded()) {
+        if (Player::allCharToLink[c]->isVirus()) {
+          p2->increaseVirus();
+        } else {
+          p2->increaseData();
+        }
+      }
+    }
+
+    p1->resetData();
+    p1->resetVirus();
+    for (char c = 'A'; c <= 'H'; c++) {
+      if (Player::allCharToLink[c]->isDownloaded()) {
+        if (Player::allCharToLink[c]->isVirus()) {
+          p1->increaseVirus();
+        } else {
+          p1->increaseData();
+        }
+      }
+    }
+
     // ------------------------------------------------------------------------
     //  Check for wins.
     // ------------------------------------------------------------------------
