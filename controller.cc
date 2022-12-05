@@ -79,6 +79,7 @@ void Controller::runGame() {
     }
 
     // Update Downloads.
+    
     p2->resetData();
     p2->resetVirus();
     p1->resetData();
@@ -91,7 +92,14 @@ void Controller::runGame() {
           p2->increaseData();
         }
       }
-      else if (Player::allCharToLink[c]->getSelfDownloaded()) {
+      if (Player::allCharToLink[c]->isReborn()) {
+        if (Player::allCharToLink[c]->isVirus()) {
+          p2->increaseVirus();
+        } else {
+          p2->increaseData();
+        }
+      }
+      if (Player::allCharToLink[c]->getSelfDownloaded()) {
         p1->increaseVirus();
       }
     }
@@ -103,7 +111,14 @@ void Controller::runGame() {
           p1->increaseData();
         }
       }
-      else if (Player::allCharToLink[c]->getSelfDownloaded()) {
+      if (Player::allCharToLink[c]->isReborn()) {
+        if (Player::allCharToLink[c]->isVirus()) {
+          p1->increaseVirus();
+        } else {
+          p1->increaseData();
+        }
+      }
+      if (Player::allCharToLink[c]->getSelfDownloaded()) {
         p2->increaseVirus();
       }
     }
