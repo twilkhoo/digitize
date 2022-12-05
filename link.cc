@@ -109,8 +109,8 @@ void Link::reveal() {
 }
 
 int Link::getStrength() { 
-  if ((owner == 1 && board.grid[row][col]->getFirewall1()) ||
-      (owner == 2 && board.grid[row][col]->getFirewall2())) {
+  if ((owner == 1 && board.grid[row][col]->getHighGround1()) ||
+      (owner == 2 && board.grid[row][col]->getHighGround2())) {
     return strength + 1;
   }
   return strength;
@@ -278,8 +278,8 @@ void Link::commonMove(char dir) {
       movingFromAbility();
       setLocation(desiredRow, desiredCol);
       board.grid[desiredRow][desiredCol]->setOwner(winner);
-      if (board.grid[desiredRow][desiredCol]->getFirewall1() || board.grid[desiredRow][desiredCol]->getFirewall2()) {
-        
+      if (board.grid[desiredRow][desiredCol]->getHighGround1() || board.grid[desiredRow][desiredCol]->getHighGround2()) {
+        board.grid[desiredRow][desiredCol]->destroyHighGround();
       }
     } else {
       cout << "Player " << winner << " wins! Link downloaded by enemy: " << letter << endl;

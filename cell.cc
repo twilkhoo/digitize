@@ -33,3 +33,5 @@ void Cell::setAppearance(char letter) { appearance = letter; }
 int Cell::getOwner() { return owner; };
 
 void Cell::setOwner(int owner_) { owner = owner_; }
+
+void Cell::destroyHighGround() { isHighGround1 = false; isHighGround2 = false; }
