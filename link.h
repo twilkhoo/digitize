@@ -17,6 +17,7 @@ class Link {
   bool isHidden = true;
   bool Downloaded = false;
   bool selfDownloaded = false;
+  bool reborn = false;
   int row;
   int col;
   int speed = 1;
@@ -44,6 +45,8 @@ class Link {
   bool getSelfDownloaded();
   void linkSwitch();
   void movingFromAbility(); // checks if moving off a firewall, set it back to firewall
+  void revive();
+  bool isReborn();
 
   Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
   virtual ~Link() = default;
