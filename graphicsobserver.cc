@@ -58,6 +58,19 @@ void GraphicsObserver::notify(
             displayStr, Xwindow::White);
       }
 
+      else if (curChar == 'z' || curChar == 'Z') {
+        displayStr = curChar;
+        w.fillRectangle(
+            (row * cellWidth) + ((row + 1) * border),
+            (col * cellWidth) + ((col + 1) * border) + verticalOffset,
+            cellWidth, cellWidth, Xwindow::Golden);
+        w.drawString(
+            (row * cellWidth) + ((row + 1) * border) + stringLeftMargin + 12,
+            (col * cellWidth) + ((col + 1) * border) + verticalOffset +
+                stringVerticalOffset,
+            displayStr, Xwindow::White);
+      }
+
       else if ((curChar >= 'a' && curChar <= 'h') ||
                (curChar >= 'A' && curChar <= 'H')) {
         if (allLinkNames[curChar][0] == 'D') {
