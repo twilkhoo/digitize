@@ -27,12 +27,14 @@ class Link {
   void commonMove(char dir);
   void setLocation(int row_, int col_);
   std::string getName();
+  void setName(std::string s);
   bool getIsHidden();
 	int getOwner();
   void boost();
   int battle(Link & l2);
   int getRow();
   int getCol();
+  int getStrength();
   char getLetter();
   void download();
   void reveal();

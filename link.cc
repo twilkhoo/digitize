@@ -49,7 +49,7 @@ void Link::boost() {
 std::string Link::getName() {
   std::string str = "";
   isData ? str += "D" : str += "V";
-  str += std::to_string(strength - '0');
+  str += std::to_string(getStrength() - '0');
   return str;
 }
 
@@ -82,7 +82,7 @@ int Link::getOwner() {
 int Link::battle(Link & l2) {
   if (getIsHidden()) { reveal(); }
   if (l2.getIsHidden()) { l2.reveal(); }
-  if (strength >= l2.strength) {
+  if (getStrength() >= l2.getStrength()) {
     return owner;
   } else {
     return l2.owner;
@@ -94,7 +94,11 @@ void Link::download() {
   board.grid[row][col]->setAppearance('.');
   board.grid[row][col]->setOwner(0);
   movingFromAbility();
-  }
+}
+
+void Link::setName(std::string s) {
+  name = s;
+}
 
 bool Link::isVirus() { return !isData; }
 
@@ -102,6 +106,14 @@ bool Link::isDownloaded() { return Downloaded; }
 
 void Link::reveal() {
   isHidden = false;
+}
+
+int Link::getStrength() { 
+  if ((owner == 1 && board.grid[row][col]->getHighGround1()) ||
+      (owner == 2 && board.grid[row][col]->getHighGround2())) {
+    return strength + 1;
+  }
+  return strength;
 }
 
 bool Link::getSelfDownloaded() { return selfDownloaded; }
@@ -112,8 +124,27 @@ void Link::movingFromAbility() {
   if (board.grid[row][col]->getFirewall1()) {
     board.grid[row][col]->setAppearance('m');
     board.grid[row][col]->setOwner(1);
-  } else if (board.grid[row][col]->getFirewall2()) {
+  } 
+  else if (board.grid[row][col]->getFirewall2()) {
     board.grid[row][col]->setAppearance('w');
+    board.grid[row][col]->setOwner(2);
+  }
+  else if (board.grid[row][col]->getHighGround1()) {
+    if (isVirus()) {
+      setName("V" + std::to_string(strength));
+    } else {
+      setName("D" + std::to_string(strength));
+    }
+    board.grid[row][col]->setAppearance('z');
+    board.grid[row][col]->setOwner(1);
+  }
+  else if (board.grid[row][col]->getHighGround2()) {
+    if (isVirus()) {
+      setName("V" + std::to_string(strength));
+    } else {
+      setName("D" + std::to_string(strength));
+    }
+    board.grid[row][col]->setAppearance('Z');
     board.grid[row][col]->setOwner(2);
   }
 }
@@ -167,8 +198,8 @@ void Link::commonMove(char dir) {
   char desiredChar = board.grid[desiredRow][desiredCol]->getAppearance();
 
   // Ensure desired location is not onto your own link.
-  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1 && desiredChar != 'm') ||
-      (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2 && desiredChar != 'w'))
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1 && desiredChar != 'm' && desiredChar != 'z') ||
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2 && desiredChar != 'w' && desiredChar != 'Z'))
     throw "Invalid movement, link moves onto your own link.";
 
   // Moving into an opponent's server port.
@@ -213,6 +244,25 @@ void Link::commonMove(char dir) {
       setLocation(desiredRow, desiredCol);
     }
 
+  // Moving onto your own high ground.
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getHighGround1()) || 
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getHighGround2())) {
+    if (isVirus()) {
+      name = "V";
+    } else {
+      name = "D";
+    }
+    name += std::to_string(allCharToLink[board.grid[row][col]->getAppearance()]->getStrength());
+    allCharToLink[board.grid[row][col]->getAppearance()]->setName(name);
+      board.grid[row][col]->setAppearance('.');
+      board.grid[row][col]->setOwner(0);
+      board.grid[desiredRow][desiredCol]->setAppearance(letter);
+      board.grid[desiredRow][desiredCol]->setOwner(owner);
+      movingFromAbility();
+      setLocation(desiredRow, desiredCol);
+      return;
+  }
+
   // Moving onto an enemy link. (Battle)
 
   if (desiredChar != '.' && desiredChar!= 'm' && desiredChar != 'w' &&
@@ -228,6 +278,9 @@ void Link::commonMove(char dir) {
       movingFromAbility();
       setLocation(desiredRow, desiredCol);
       board.grid[desiredRow][desiredCol]->setOwner(winner);
+      if (board.grid[desiredRow][desiredCol]->getHighGround1() || board.grid[desiredRow][desiredCol]->getHighGround2()) {
+        board.grid[desiredRow][desiredCol]->destroyHighGround();
+      }
     } else {
       cout << "Player " << winner << " wins! Link downloaded by enemy: " << letter << endl;
       download();

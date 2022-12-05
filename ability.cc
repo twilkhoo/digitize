@@ -181,6 +181,21 @@ HighGround::HighGround(int i, std::unordered_map<char, Link*>& charToLink_,
               i, charToLink_, board_){};
 
 void HighGround::useAbility(int player, int x, int y) {
+  if (isUsed) throw "Ability already used.";
+  if (board.grid[x][y]->getAppearance() == '.') {
+    if (player == 1) {
+      board.grid[x][y]->setAppearance('z');
+      board.grid[x][y]->setOwner(1);
+      board.grid[x][y]->setHighGround1();
+    }
+    else if (player == 2) {
+      board.grid[x][y]->setAppearance('Z');
+      board.grid[x][y]->setOwner(2);
+      board.grid[x][y]->setHighGround2();
+    }
+  } 
+  else { throw "Ability used on top of link or existing ability, specify a blank position."; }
+  isUsed = true;
   cout << "HighGround useability called with int x " << x << " and y " << y
        << endl;
 }

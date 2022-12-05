@@ -37,6 +37,7 @@ class Cell {
   void setFirewall2();
   void setHighGround1();
   void setHighGround2();
+  void destroyHighGround();
 };
 
 #endif
