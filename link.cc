@@ -83,13 +83,17 @@ void Link::reveal() {
   isHidden = false;
 }
 
+bool Link::getSelfDownloaded() { return selfDownloaded; }
+
+void Link::selfDownload() { selfDownloaded = true; }
+
 void Link::commonMove(char dir) {
   dir = tolower(dir);
 
   // Check if link is already downloaded
 
   if (Downloaded) { throw "Link already downloaded by enemy."; }
-
+  if (selfDownloaded) { throw "Link already downloaded by you, due to firewall."; }
   // Ensure the dir char is valid.
   if (dir != 'u' && dir != 'd' && dir != 'l' && dir != 'r')
     throw "Invalid direction given.";
@@ -130,8 +134,8 @@ void Link::commonMove(char dir) {
     throw "Invalid movement, link moves onto your own server port.";
 
   // Ensure desired location is not onto your own link.
-  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1) ||
-      (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2))
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1 && board.grid[desiredRow][desiredCol]->getAppearance() != 'm') ||
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2 && board.grid[desiredRow][desiredCol]->getAppearance() != 'w'))
     throw "Invalid movement, link moves onto your own link.";
 
   // Moving into an opponent's server port.
@@ -144,6 +148,17 @@ void Link::commonMove(char dir) {
     return;
   } 
 
+  // Moving onto an opponent firewall
+
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getFirewall2()) || 
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getFirewall1())) {
+    reveal();
+    if (allCharToLink[board.grid[row][col]->getAppearance()]->isVirus()) {
+      selfDownload();
+    }
+    board.grid[row][col]->setAppearance('.');
+    board.grid[row][col]->setOwner(0);
+  }
 
   // Moving onto an enemy link. (Battle)
 
@@ -176,9 +191,17 @@ void Link::commonMove(char dir) {
     board.grid[desiredRow][desiredCol]->setOwner(owner);
   }
 
-  // Moving into an opponent firewall.
-
   // Moving onto an opponent HighGround (only if opponent link is present).
+
+  // Moving off of a firewall.
+
+  if (board.grid[row][col]->getFirewall1()) {
+    board.grid[row][col]->setAppearance('m');
+    board.grid[row][col]->setOwner(1);
+  } else if (board.grid[row][col]->getFirewall2()) {
+    board.grid[row][col]->setAppearance('w');
+    board.grid[row][col]->setOwner(2);
+  }
 
 	// Update that link's position if the move was successful.
 	setLocation(desiredRow, desiredCol);
