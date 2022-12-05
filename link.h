@@ -16,6 +16,7 @@ class Link {
 
   bool isHidden = true;
   bool Downloaded = false;
+  bool selfDownloaded = false;
   int row;
   int col;
   int speed = 1;
@@ -34,6 +35,8 @@ class Link {
   void reveal();
   bool isVirus();
   bool isDownloaded();
+  void selfDownload();
+  bool getSelfDownloaded();
 
   Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
   virtual ~Link() = default;
