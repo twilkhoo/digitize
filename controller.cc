@@ -81,6 +81,8 @@ void Controller::runGame() {
     // Update Downloads.
     p2->resetData();
     p2->resetVirus();
+    p1->resetData();
+    p1->resetVirus();
     for (char c = 'a'; c <= 'h'; c++) {
       if (Player::allCharToLink[c]->isDownloaded()) {
         if (Player::allCharToLink[c]->isVirus()) {
@@ -93,9 +95,6 @@ void Controller::runGame() {
         p1->increaseVirus();
       }
     }
-
-    p1->resetData();
-    p1->resetVirus();
     for (char c = 'A'; c <= 'H'; c++) {
       if (Player::allCharToLink[c]->isDownloaded()) {
         if (Player::allCharToLink[c]->isVirus()) {
@@ -239,8 +238,10 @@ void Controller::runGame() {
         }
 
         if (requiredParams == "intint") {
-          int row = (command[8]) - 'A';
-          int col = (command[9]) - 'A';
+          int row = (command[8]) - 48;
+          cout << row << endl;
+          int col = (command[9]) - 48;
+          cout << col << endl;
           try {
             curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), row, col);
           } catch (char const *err) {

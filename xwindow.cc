@@ -36,7 +36,7 @@ Xwindow::Xwindow(int width, int height) {
                             "darkgreen", "rebeccapurple", "dimgrey", "darkorange"};
 
   cmap = DefaultColormap(d, DefaultScreen(d));
-  for (int i = 0; i < 6; ++i) {
+  for (int i = 0; i < 7; ++i) {
     XParseColor(d, cmap, color_vals[i], &xcolour);
     XAllocColor(d, cmap, &xcolour);
     colours[i] = xcolour.pixel;

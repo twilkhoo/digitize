@@ -37,6 +37,8 @@ class Link {
   bool isDownloaded();
   void selfDownload();
   bool getSelfDownloaded();
+  void linkSwitch();
+  void movingFromAbility(); // checks if moving off a firewall, set it back to firewall
 
   Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
   virtual ~Link() = default;
