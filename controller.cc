@@ -89,6 +89,9 @@ void Controller::runGame() {
           p2->increaseData();
         }
       }
+      else if (Player::allCharToLink[c]->getSelfDownloaded()) {
+        p1->increaseVirus();
+      }
     }
 
     p1->resetData();
@@ -100,6 +103,9 @@ void Controller::runGame() {
         } else {
           p1->increaseData();
         }
+      }
+      else if (Player::allCharToLink[c]->getSelfDownloaded()) {
+        p2->increaseVirus();
       }
     }
 
