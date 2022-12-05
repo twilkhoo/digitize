@@ -108,6 +108,14 @@ void Controller::runGame() {
       }
     }
 
+    // Update abilities
+    p1->resetAbilities();
+    p2->resetAbilities();
+    for (int i = 1; i <= 5; i++) {
+      if (p1->intToAbility[i]->getIsUsed()) p1->decreaseAbilities();
+      if (p2->intToAbility[i]->getIsUsed()) p2->decreaseAbilities();
+    }
+
     // ------------------------------------------------------------------------
     //  Check for wins.
     // ------------------------------------------------------------------------

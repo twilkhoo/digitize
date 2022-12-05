@@ -25,7 +25,6 @@ class Player {
   std::unordered_map<int, Ability*> intToAbility;
   static std::unordered_map<char, Link*> allCharToLink;
 
-  std::vector<char> myDeadLinks;
   int getPlayerNum();
   int getDataCount();
   int getVirusCount();
@@ -34,6 +33,8 @@ class Player {
   void increaseVirus();
   void resetData();
   void resetVirus();
+  void decreaseAbilities();
+  void resetAbilities();
   
 };
 

@@ -83,7 +83,12 @@ int Link::battle(Link & l2) {
   }
 }
 
-void Link::download() { Downloaded = true; reveal();}
+void Link::download() { 
+  Downloaded = true; reveal();
+  board.grid[row][col]->setAppearance('.');
+  board.grid[row][col]->setOwner(0);
+  movingFromAbility();
+  }
 
 bool Link::isVirus() { return !isData; }
 
@@ -140,10 +145,7 @@ void Link::commonMove(char dir) {
 
   if ((owner == 1 && desiredRow > 7) || (owner == 2 && desiredRow < 0)) {
     download();
-    board.grid[row][col]->setAppearance('.');
-    board.grid[row][col]->setOwner(0);
     cout << "Moved across edge, downloaded by opponent" << endl;
-    movingFromAbility();
     return;
   }
 
@@ -168,9 +170,6 @@ void Link::commonMove(char dir) {
   if (((desiredRow == 0 && (desiredCol == 3 || desiredCol == 4)) && (owner = 2)) || 
       ((desiredRow == 7 && (desiredCol == 3 || desiredCol == 4)) && (owner = 1))) {
     allCharToLink[board.grid[row][col]->getAppearance()]->download();
-    board.grid[row][col]->setAppearance('.');
-    board.grid[row][col]->setOwner(0);
-    movingFromAbility();
     return;
   } 
 
@@ -226,8 +225,6 @@ void Link::commonMove(char dir) {
     } else {
       cout << "Player " << winner << " wins! Link downloaded by enemy: " << letter << endl;
       download();
-      board.grid[row][col]->setAppearance('.');
-      board.grid[row][col]->setOwner(0);
     }
     return;
   }

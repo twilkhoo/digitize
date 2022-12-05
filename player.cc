@@ -113,6 +113,10 @@ void Player::resetData() { dataCount = 0; }
 
 void Player::resetVirus() { virusCount = 0; }
 
+void Player::decreaseAbilities() { abilitiesCount--; }
+
+void Player::resetAbilities() { abilitiesCount = 5; }
+
 Player::~Player() {
   for (std::unordered_map<int, Ability*>::iterator it = intToAbility.begin();
        it != intToAbility.end(); ++it) {
