@@ -29,6 +29,14 @@ class Cell {
   bool getFirewall2();
   int getOwner();
   void setOwner(int owner_);
+  bool getPort1();
+  bool getPort2();
+  bool getHighGround1();
+  bool getHighGround2();
+  void setFirewall1();
+  void setFirewall2();
+  void setHighGround1();
+  void setHighGround2();
 };
 
 #endif

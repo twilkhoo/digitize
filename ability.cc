@@ -50,11 +50,7 @@ LinkBoost::LinkBoost(int i, std::unordered_map<char, Link*>& charToLink_,
 
 void LinkBoost::useAbility(int player, char l) {
   if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
-  if ((l >= 'a' && l <= 'h' && player == 2) ||
-      (l >= 'A' && l <= 'H' && player == 1))
-    throw "You can only boost your own link.";
-  if (getIsUsed())
-    throw "This ability has already been used.";
+  if (charToLink[l]->getOwner() != player) throw "You can only boost your own link.";
   charToLink[l]->boost();
   isUsed = true;
   cout << "LinkBoost used with link " << l << endl;
@@ -74,6 +70,22 @@ Firewall::Firewall(int i, std::unordered_map<char, Link*>& charToLink_,
               charToLink_, board_){};
 
 void Firewall::useAbility(int player, int x, int y) {
+  if (board.grid[x][y]->getPort1() ||
+      board.grid[x][y]->getPort2() ||
+      board.grid[x][y]->getHighGround1() ||
+      board.grid[x][y]->getHighGround2() ||
+      board.grid[x][y]->getFirewall1() ||
+      board.grid[x][y]->getFirewall2()) {
+        throw "You can't place your firewall on cells occupied by ports and other abilities.";
+      }
+  if (player == 1) {
+    board.grid[x][y]->setFirewall1();
+    board.grid[x][y]->setAppearance('m');
+  } else {
+    board.grid[x][y]->setFirewall2();
+    board.grid[x][y]->setAppearance('w');
+  }
+  isUsed = true;
   cout << "Firewall useability called with int x " << x << " and y " << y
        << endl;
 }
@@ -89,6 +101,9 @@ Download::Download(int i, std::unordered_map<char, Link*>& charToLink_,
               charToLink_, board_){};
 
 void Download::useAbility(int player, char l) {
+  if (charToLink[l]->getOwner() == player) throw "You can only download your opponent's link.";
+  charToLink[l]->download();
+  isUsed = true;
   cout << "Download useability called with link char " << l << endl;
 }
 
@@ -105,6 +120,8 @@ Polarize::Polarize(int i, std::unordered_map<char, Link*>& charToLink_,
               board_){};
 
 void Polarize::useAbility(int player, char l) {
+  charToLink[l]->linkSwitch();
+  isUsed = true;
   cout << "Polarize useability called with link char " << l << endl;
 }
 
@@ -118,8 +135,10 @@ Scan::Scan(int i, std::unordered_map<char, Link*>& charToLink_, Board& board_)
               board_){};
 
 void Scan::useAbility(int player, char l) {
-  charToLink[l]->getIsHidden(true); //
-  isUsed = true; //
+  if (charToLink[l]->getOwner() == player) throw "You can only scan your opponent's link.";
+  if (charToLink[l]->getIsHidden()) throw "This link has already been revealed.";
+  charToLink[l]->reveal();
+  isUsed = true;
   cout << "Scan useability called with link char " << l << endl;
 }
 

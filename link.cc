@@ -57,6 +57,16 @@ bool Link::getIsHidden() {
   return isHidden;
 }
 
+// switches link from data to a virus or vice versa
+
+void Link::linkSwitch() {
+  if (isData) {
+    isData = false;
+  } else {
+    isData = true;
+  }
+}
+
 int Link::getOwner() {
 	return owner;
 }
@@ -86,6 +96,16 @@ void Link::reveal() {
 bool Link::getSelfDownloaded() { return selfDownloaded; }
 
 void Link::selfDownload() { selfDownloaded = true; }
+
+void Link::movingFromAbility() {
+  if (board.grid[row][col]->getFirewall1()) {
+    board.grid[row][col]->setAppearance('m');
+    board.grid[row][col]->setOwner(1);
+  } else if (board.grid[row][col]->getFirewall2()) {
+    board.grid[row][col]->setAppearance('w');
+    board.grid[row][col]->setOwner(2);
+  }
+}
 
 void Link::commonMove(char dir) {
   dir = tolower(dir);
@@ -123,6 +143,7 @@ void Link::commonMove(char dir) {
     board.grid[row][col]->setAppearance('.');
     board.grid[row][col]->setOwner(0);
     cout << "Moved across edge, downloaded by opponent" << endl;
+    movingFromAbility();
     return;
   }
 
@@ -133,9 +154,13 @@ void Link::commonMove(char dir) {
   if (invalidDirection)
     throw "Invalid movement, link moves onto your own server port.";
 
+ // Appearance of desired position and current
+
+  char desiredChar = board.grid[desiredRow][desiredCol]->getAppearance();
+
   // Ensure desired location is not onto your own link.
-  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1 && board.grid[desiredRow][desiredCol]->getAppearance() != 'm') ||
-      (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2 && board.grid[desiredRow][desiredCol]->getAppearance() != 'w'))
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getOwner() == 1 && desiredChar != 'm') ||
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getOwner() == 2 && desiredChar != 'w'))
     throw "Invalid movement, link moves onto your own link.";
 
   // Moving into an opponent's server port.
@@ -145,32 +170,57 @@ void Link::commonMove(char dir) {
     allCharToLink[board.grid[row][col]->getAppearance()]->download();
     board.grid[row][col]->setAppearance('.');
     board.grid[row][col]->setOwner(0);
+    movingFromAbility();
     return;
   } 
+
 
   // Moving onto an opponent firewall
 
   if ((owner == 1 && board.grid[desiredRow][desiredCol]->getFirewall2()) || 
       (owner == 2 && board.grid[desiredRow][desiredCol]->getFirewall1())) {
     reveal();
-    if (allCharToLink[board.grid[row][col]->getAppearance()]->isVirus()) {
+    if (allCharToLink[letter]->isVirus()) {
       selfDownload();
+      board.grid[row][col]->setAppearance('.');
+      board.grid[row][col]->setOwner(0);
+      movingFromAbility();
+      return;
+    } else {
+      board.grid[desiredRow][desiredCol]->setAppearance(letter);
+      board.grid[desiredRow][desiredCol]->setOwner(owner);
+      board.grid[row][col]->setAppearance('.');
+      board.grid[row][col]->setOwner(0);
+      movingFromAbility();
+      setLocation(desiredRow, desiredCol);
+      return;
     }
-    board.grid[row][col]->setAppearance('.');
-    board.grid[row][col]->setOwner(0);
   }
+
+  // Moving onto your own firewall.
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getFirewall1()) || 
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getFirewall2())) {
+      board.grid[desiredRow][desiredCol]->setAppearance(letter);
+      board.grid[desiredRow][desiredCol]->setOwner(owner);
+      board.grid[row][col]->setAppearance('.');
+      board.grid[row][col]->setOwner(0);
+      movingFromAbility();
+      setLocation(desiredRow, desiredCol);
+    }
 
   // Moving onto an enemy link. (Battle)
 
-  if (board.grid[desiredRow][desiredCol]->getAppearance() != '.' && board.grid[desiredRow][desiredCol]->getOwner() != 0) {
-    cout << "Battle initiated: " << letter << " vs. " << board.grid[desiredRow][desiredCol]->getAppearance() << endl;
-    int winner = battle(*allCharToLink[board.grid[desiredRow][desiredCol]->getAppearance()]);
+  if (desiredChar != '.' && desiredChar!= 'm' && desiredChar != 'w' &&
+      board.grid[desiredRow][desiredCol]->getOwner() != 0) {
+    cout << "Battle initiated: " << letter << " vs. " << desiredChar << endl;
+    int winner = battle(*allCharToLink[desiredChar]);
     if (winner == owner) {
-      cout << "Player " << winner << " wins! Downloading enemy link: " << board.grid[desiredRow][desiredCol]->getAppearance() << endl;
-      allCharToLink[board.grid[desiredRow][desiredCol]->getAppearance()]->download();
+      cout << "Player " << winner << " wins! Downloading enemy link: " << desiredChar << endl;
+      allCharToLink[desiredChar]->download();
       board.grid[desiredRow][desiredCol]->setAppearance(letter);
       board.grid[row][col]->setAppearance('.');
       board.grid[row][col]->setOwner(0);
+      movingFromAbility();
       setLocation(desiredRow, desiredCol);
       board.grid[desiredRow][desiredCol]->setOwner(winner);
     } else {
@@ -179,7 +229,6 @@ void Link::commonMove(char dir) {
       board.grid[row][col]->setAppearance('.');
       board.grid[row][col]->setOwner(0);
     }
-
     return;
   }
   
@@ -189,19 +238,10 @@ void Link::commonMove(char dir) {
     board.grid[row][col]->setOwner(0);
     board.grid[desiredRow][desiredCol]->setAppearance(letter);
     board.grid[desiredRow][desiredCol]->setOwner(owner);
+    movingFromAbility();
   }
 
   // Moving onto an opponent HighGround (only if opponent link is present).
-
-  // Moving off of a firewall.
-
-  if (board.grid[row][col]->getFirewall1()) {
-    board.grid[row][col]->setAppearance('m');
-    board.grid[row][col]->setOwner(1);
-  } else if (board.grid[row][col]->getFirewall2()) {
-    board.grid[row][col]->setAppearance('w');
-    board.grid[row][col]->setOwner(2);
-  }
 
 	// Update that link's position if the move was successful.
 	setLocation(desiredRow, desiredCol);

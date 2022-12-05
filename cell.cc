@@ -10,6 +10,22 @@ bool Cell::getFirewall1() { return isFirewall1; }
 
 bool Cell::getFirewall2() { return isFirewall2; }
 
+bool Cell::getHighGround1() { return isHighGround1; }
+
+bool Cell::getHighGround2() { return isHighGround2; }
+
+bool Cell::getPort1() { return isPort1; }
+
+bool Cell::getPort2() { return isPort2; }
+
+void Cell::setFirewall1() { isFirewall1 = true; }
+
+void Cell::setFirewall2() { isFirewall2 = true; }
+
+void Cell::setHighGround1() { isHighGround1 = true; }
+
+void Cell::setHighGround2() { isHighGround2 = true; }
+
 char Cell::getAppearance() { return appearance; }
 
 void Cell::setAppearance(char letter) { appearance = letter; }
@@ -17,5 +33,3 @@ void Cell::setAppearance(char letter) { appearance = letter; }
 int Cell::getOwner() { return owner; };
 
 void Cell::setOwner(int owner_) { owner = owner_; }
-
-
