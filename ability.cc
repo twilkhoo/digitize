@@ -162,7 +162,30 @@ LinkReborn::LinkReborn(int i, std::unordered_map<char, Link*>& charToLink_,
 
 void LinkReborn::useAbility(int player, char l) {
   if (isUsed) throw "Ability already used.";
+  if (charToLink[l]->isReborn()) throw "This link has already been revived once.";
+  if (charToLink[l]->getSelfDownloaded()) "You cannot revive a link you self-downloaded.";
+  if (player != charToLink[l]->getOwner()) throw "Cannot cast on enemy link.";
+  if (!(charToLink[l]->isDownloaded())) throw "Link is still alive.";
   cout << "LinkReborn useability called with link char " << l << endl;
+  int originalCol;
+  int originalRow;
+  if ('a' <= l && l <= 'h') {
+    originalCol = l - 97;
+    originalRow = 0;
+    if (originalCol == 3 || originalCol == 4) originalRow = 1;
+  } 
+  else if ('A' <= l && l <= 'H') {
+    originalCol = l - 65;
+    originalRow = 7;
+    if (originalCol == 3 || originalCol == 4) originalRow = 6;
+  }
+  cout << originalRow << originalCol;
+  if (board.grid[originalRow][originalCol]->getAppearance() != '.') throw "Original spawn position of link is not free.";
+  board.grid[originalRow][originalCol]->setAppearance(l);
+  board.grid[originalRow][originalCol]->setOwner(player);
+  charToLink[l]->revive();
+  charToLink[l]->setLocation(originalRow, originalCol);
+  isUsed = true;
 }
 
 // ----------------------------------------------------------------------------
