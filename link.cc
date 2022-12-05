@@ -63,6 +63,17 @@ bool Link::getIsHidden() {
   return isHidden;
 }
 
+// Revives a link for link reborn ability
+
+void Link::revive() {
+  Downloaded = false;
+  reborn = true;
+}
+
+// Checks if link has been revived
+
+bool Link::isReborn() { return reborn; }
+
 // switches link from data to a virus or vice versa
 
 void Link::linkSwitch() {
