@@ -49,6 +49,7 @@ LinkBoost::LinkBoost(int i, std::unordered_map<char, Link*>& charToLink_,
               charToLink_, board_) {}
 
 void LinkBoost::useAbility(int player, char l) {
+  if (isUsed) throw "Ability already used.";
   if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
   if (charToLink[l]->getOwner() != player) throw "You can only boost your own link.";
   charToLink[l]->boost();
@@ -70,6 +71,7 @@ Firewall::Firewall(int i, std::unordered_map<char, Link*>& charToLink_,
               charToLink_, board_){};
 
 void Firewall::useAbility(int player, int x, int y) {
+  if (isUsed) throw "Ability already used.";
   if (board.grid[x][y]->getPort1() ||
       board.grid[x][y]->getPort2() ||
       board.grid[x][y]->getHighGround1() ||
@@ -101,6 +103,7 @@ Download::Download(int i, std::unordered_map<char, Link*>& charToLink_,
               charToLink_, board_){};
 
 void Download::useAbility(int player, char l) {
+  if (isUsed) throw "Ability already used.";
   if (charToLink[l]->getOwner() == player) throw "You can only download your opponent's link.";
   charToLink[l]->download();
   isUsed = true;
@@ -120,6 +123,7 @@ Polarize::Polarize(int i, std::unordered_map<char, Link*>& charToLink_,
               board_){};
 
 void Polarize::useAbility(int player, char l) {
+  if (isUsed) throw "Ability already used.";
   charToLink[l]->linkSwitch();
   isUsed = true;
   cout << "Polarize useability called with link char " << l << endl;
@@ -135,8 +139,9 @@ Scan::Scan(int i, std::unordered_map<char, Link*>& charToLink_, Board& board_)
               board_){};
 
 void Scan::useAbility(int player, char l) {
+  if (isUsed) throw "Ability already used.";
   if (charToLink[l]->getOwner() == player) throw "You can only scan your opponent's link.";
-  if (charToLink[l]->getIsHidden()) throw "This link has already been revealed.";
+  if (!(charToLink[l]->getIsHidden())) throw "This link has already been revealed.";
   charToLink[l]->reveal();
   isUsed = true;
   cout << "Scan useability called with link char " << l << endl;
@@ -156,6 +161,7 @@ LinkReborn::LinkReborn(int i, std::unordered_map<char, Link*>& charToLink_,
           charToLink_, board_){};
 
 void LinkReborn::useAbility(int player, char l) {
+  if (isUsed) throw "Ability already used.";
   cout << "LinkReborn useability called with link char " << l << endl;
 }
 
