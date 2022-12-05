@@ -198,6 +198,18 @@ Portal::Portal(int i, std::unordered_map<char, Link*>& charToLink_,
               i, charToLink_, board_){};
 
 void Portal::useAbility(int player, char l1, char l2) {
+  if (isUsed) { throw "Ability already used."; }
+  if (charToLink[l1]->getOwner() != player || charToLink[l2]->getOwner() != player) throw "Links are not both owned by player.";
+  char c1 = charToLink[l1]->getLetter();
+  char c2 = charToLink[l2]->getLetter();
+  int row1 = charToLink[l1]->getRow();
+  int row2 = charToLink[l2]->getRow();
+  int col1 = charToLink[l1]->getCol();
+  int col2 = charToLink[l2]->getCol();
+  board.grid[row1][col1]->setAppearance(c2) ;
+  board.grid[row2][col2]->setAppearance(c1) ;
+  charToLink[l1]->setLocation(row2, col2);
+  charToLink[l2]->setLocation(row1, col1);
   cout << "Portal useability called with link char l1 " << l1 << " and l2 "
        << l2 << endl;
 }
