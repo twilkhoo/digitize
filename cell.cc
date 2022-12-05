@@ -6,6 +6,10 @@ Cell::Cell(int x_, int y_, bool isPort1_, bool isPort2_)
   if (isPort2) appearance = 'S';
 }
 
+bool Cell::getFirewall1() { return isFirewall1; }
+
+bool Cell::getFirewall2() { return isFirewall2; }
+
 char Cell::getAppearance() { return appearance; }
 
 void Cell::setAppearance(char letter) { appearance = letter; }

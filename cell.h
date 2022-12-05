@@ -12,10 +12,10 @@ class Cell {
 
   bool isPort1;
   bool isPort2;
-  bool isFirewall1;
-  bool isFirewall2;
-  bool isHighGround1;
-  bool isHighGround2;
+  bool isFirewall1 = false;
+  bool isFirewall2 = false;
+  bool isHighGround1 = false;
+  bool isHighGround2 = false;
 
 
  public:
@@ -25,8 +25,8 @@ class Cell {
 
   char getAppearance();
   void setAppearance (char letter);
-
-
+  bool getFirewall1();
+  bool getFirewall2();
   int getOwner();
   void setOwner(int owner_);
 };
