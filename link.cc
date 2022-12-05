@@ -53,6 +53,12 @@ std::string Link::getName() {
   return str;
 }
 
+int Link::getRow() { return row; }
+
+int Link::getCol() { return col; }
+
+char Link::getLetter() { return letter; }
+
 bool Link::getIsHidden() {
   return isHidden;
 }

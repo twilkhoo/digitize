@@ -31,6 +31,9 @@ class Link {
 	int getOwner();
   void boost();
   int battle(Link & l2);
+  int getRow();
+  int getCol();
+  char getLetter();
   void download();
   void reveal();
   bool isVirus();
