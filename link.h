@@ -3,6 +3,8 @@
 
 #include <unordered_map>
 #include <string>
+#include <memory>
+
 #include "board.h"
 
 class Link {
@@ -12,7 +14,7 @@ class Link {
   int owner;
   char letter; // Identifier for the link, from a-h or A-H.
   bool isData;
-  std::unordered_map<char, Link*>& allCharToLink;
+  std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink;
 
   bool isHidden = true;
   bool Downloaded = false;
@@ -50,19 +52,19 @@ class Link {
   bool isDead();
   bool isReborn();
 
-  Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
+  Link(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink_);
   virtual ~Link() = default;
 };
 
 class Data : public Link {
  public:
-  Data(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
+  Data(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink_);
   void move(char dir);
 };
 
 class Virus : public Link {
  public:
-  Virus(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, Link*>& allCharToLink_);
+  Virus(int strength_, Board& board_, int owner, char letter_, bool isData_, std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink_);
   void move(char dir);
 };
 

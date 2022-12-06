@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <memory>
 
 #include "player.h"
 
@@ -24,28 +25,12 @@ void printLine();
 
 Controller::Controller(std::string abilitiesP1, std::string abilitiesP2,
                        std::string linksP1, std::string linksP2, bool graphics_)
-    : board{new Board()},
-      p1{new Player{linksP1, abilitiesP1, 1, *board}},
-      p2{new Player{linksP2, abilitiesP2, 2, *board}},
-      textObserver{new TextObserver(board)},
+    : board{std::make_shared<Board>()},
+      p1{std::make_shared<Player>(linksP1, abilitiesP1, 1, *board)},
+      p2{std::make_shared<Player>(linksP2, abilitiesP2, 2, *board)},
+      textObserver{std::make_shared<TextObserver>(board)},
       graphics{graphics_} {
-  if (graphics) graphicsObserver = new GraphicsObserver(board);
-}
-
-// ----------------------------------------------------------------------------
-//
-//  Destructor.
-//
-// ----------------------------------------------------------------------------
-
-Controller::~Controller() {
-  delete textObserver;
-  if (graphics) {
-    delete graphicsObserver;
-  }
-  delete board;
-  delete p1;
-  delete p2;
+  if (graphics) graphicsObserver = std::make_shared<GraphicsObserver>(board);
 }
 
 // ----------------------------------------------------------------------------
@@ -57,10 +42,11 @@ Controller::~Controller() {
 void Controller::runGame() {
   string command;
   bool readError = false;
-  Player *curPlayer = p1;
+  auto curPlayer = p1;
   bool switchPlayers = false;
 
-  std::istream *in = &std::cin;
+  bool useFile = false;
+  std::unique_ptr<std::ifstream> fileIn;
 
   cout << endl;
   cout << "Welcome to..." << endl << endl;
@@ -170,7 +156,12 @@ void Controller::runGame() {
 
     // For organization, we will use getline instead of only input stream. So,
     // commands must be entered on the same line. This is made clear in -help.
-    getline(*in, command);
+    if (useFile) {
+      getline(*fileIn, command);
+    } else {
+      getline(std::cin, command);
+    }
+
     removeWhitespace(command);
 
     // cout << "command given is: " << command << endl;  // Just to debug.
@@ -179,7 +170,7 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Move.
     // ------------------------------------------------------------------------
-    if (command.substr(0, 4) == "move") {
+    if (command.substr(0, 4) == "move" || command.substr(0, 4) == "MOVE") {
       cout << endl;
       char link = command[4];
       char dir = command[5];
@@ -196,7 +187,6 @@ void Controller::runGame() {
 
           curPlayer->allCharToLink[link]->move(dir);
 
-          cout << "move link " << link << " in dir " << dir << endl;
           curPlayer == p1 ? curPlayer = p2 : curPlayer = p1;  // Switch players.
           switchPlayers = true;
         } catch (char const *err) {
@@ -209,7 +199,7 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Abilities (list all).
     // ------------------------------------------------------------------------
-    else if (command == "abilities") {
+    else if (command == "abilities" || command == "ABILITIES") {
       printLine();
       for (int i = 1; i <= 5; i++) {
         cout << "Ability " << i << ": ";
@@ -226,7 +216,7 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Ability (use).
     // ------------------------------------------------------------------------
-    else if (command.substr(0, 7) == "ability") {
+    else if (command.substr(0, 7) == "ability" || command.substr(0, 7) == "ABILITY") {
       cout << endl;
       int abilityNum = command[7] - '0';
       // cout << abilityNum << endl;
@@ -236,7 +226,7 @@ void Controller::runGame() {
       else {
         string requiredParams =
             curPlayer->intToAbility[abilityNum]->getParams();
-        cout << requiredParams << endl;
+        // cout << requiredParams << endl;
 
         if (requiredParams == "char") {
           char linkChar = (command[8]);
@@ -278,31 +268,32 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Board.
     // ------------------------------------------------------------------------
-    else if (command == "board") {
+    else if (command == "board" || command == "BOARD") {
       callBoard(curPlayer);
     }
 
     // ------------------------------------------------------------------------
     //  Sequence.
     // ------------------------------------------------------------------------
-    else if (command.substr(0, 8) == "sequence") {
+    else if (command.substr(0, 8) == "sequence" || command.substr(0, 8) == "SEQUENCE") {
       string file = command.substr(8, command.length() - 8);
       cout << file << endl;
       // Check if file exists and is readable.
-      std::ifstream *infile = new std::ifstream{file};
+      auto infile = std::make_unique<std::ifstream>(file);
       if (!infile->good()) {
         cerr << "No valid sequence file provided." << endl;
         readError = 1;
       } else {
         cout << "all good" << endl;
-        in = infile;
+        useFile = true;
+        fileIn = std::move(infile);
       }
     }
 
     // ------------------------------------------------------------------------
     //  Help.
     // ------------------------------------------------------------------------
-    else if (command == "help") {
+    else if (command == "help" || command == "HELP") {
       printLine();
       cout << "All of the following commands must be entered on the same line. "
               "Pressing enter signifies using a command.\n"
@@ -330,7 +321,7 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Quit.
     // ------------------------------------------------------------------------
-    else if (command == "quit" || in->eof()) {
+    else if (command == "quit" || command == "QUIT" || (!useFile && std::cin.eof()) || (useFile && fileIn->eof())) {
       cout << "Ending abruptly, " << endl << endl;
 
       cout << "████████╗██╗███████╗  ░██████╗░░█████╗░███╗░░░███╗███████╗\n╚══█"
@@ -358,7 +349,6 @@ void Controller::runGame() {
       readError = false;
     }
   }
-  if (in != &std::cin) delete in;
 }
 
 void removeWhitespace(string &str) {
@@ -371,7 +361,7 @@ void printLine() {
        << endl;
 }
 
-void Controller::callBoard(Player *curPlayer) {
+void Controller::callBoard(std::shared_ptr<Player> curPlayer) {
   cout << endl;
   // Summary for player 1- textObserver.
   std::ostringstream p1SummaryStream;
@@ -431,7 +421,7 @@ void Controller::callBoard(Player *curPlayer) {
   std::unordered_map<char, string> allLinkNames;
   std::unordered_map<char, Link *>::iterator it;
 
-  for (it = Player::allCharToLink.begin(); it != Player::allCharToLink.end();
+  for (auto it = Player::allCharToLink.begin(); it != Player::allCharToLink.end();
        it++) {
     string idStr;
     if ((curPlayer->getPlayerNum() == 1 && it->second->getOwner() == 2 &&
