@@ -163,7 +163,7 @@ LinkReborn::LinkReborn(int i, std::unordered_map<char, Link*>& charToLink_,
 void LinkReborn::useAbility(int player, char l) {
   if (isUsed) throw "Ability already used.";
   if (charToLink[l]->isReborn()) throw "This link has already been revived once.";
-  if (charToLink[l]->getSelfDownloaded()) "You cannot revive a link you self-downloaded.";
+  if (charToLink[l]->getSelfDownloaded()) throw "You cannot revive a link you self-downloaded.";
   if (player != charToLink[l]->getOwner()) throw "Cannot cast on enemy link.";
   if (!(charToLink[l]->isDownloaded())) throw "Link is still alive.";
   cout << "LinkReborn useability called with link char " << l << endl;
@@ -238,6 +238,7 @@ Portal::Portal(int i, std::unordered_map<char, Link*>& charToLink_,
 void Portal::useAbility(int player, char l1, char l2) {
   if (isUsed) { throw "Ability already used."; }
   if (charToLink[l1]->getOwner() != player || charToLink[l2]->getOwner() != player) throw "Links are not both owned by player.";
+  if (charToLink[l1]->isDead() || charToLink[l2]->isDead()) throw "Error: both links must be on the board.";
   char c1 = charToLink[l1]->getLetter();
   char c2 = charToLink[l2]->getLetter();
   int row1 = charToLink[l1]->getRow();
