@@ -23,7 +23,7 @@ Board::Board() {
 int Board::getLength() { return length; }
 
 char Board::getState(int row, int col) const {
-  return grid[row][col]->getAppearance();
+  return grid[row][col]->appearance;
 }
 
 void Board::render(const std::string& p1Summary, const std::string& p2Summary,
@@ -39,7 +39,7 @@ void Board::render(const std::string& p1Summary, const std::string& p2Summary,
 std::ostream& operator<<(std::ostream& out, Board& board) {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
-      out << board.grid[i][j]->getAppearance();
+      out << board.grid[i][j]->appearance;
     }
     out << std::endl;
   }

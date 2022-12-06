@@ -26,10 +26,6 @@ void Cell::setHighGround1() { isHighGround1 = true; }
 
 void Cell::setHighGround2() { isHighGround2 = true; }
 
-char Cell::getAppearance() { return appearance; }
-
-void Cell::setAppearance(char letter) { appearance = letter; }
-
 int Cell::getOwner() { return owner; };
 
 void Cell::setOwner(int owner_) { owner = owner_; }
