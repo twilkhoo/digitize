@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <memory>
 
 #include "player.h"
 
@@ -60,11 +60,14 @@ void Controller::runGame() {
   while (true) {
     printLine();
     if (switchPlayers) {
+      system("clear");
       switchPlayers = false;
     }
 
-    // Update Downloads.
-    
+    // ------------------------------------------------------------------------
+    //  Update downloads.
+    // ------------------------------------------------------------------------
+
     p2->resetData();
     p2->resetVirus();
     p1->resetData();
@@ -215,7 +218,8 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Ability (use).
     // ------------------------------------------------------------------------
-    else if (command.substr(0, 7) == "ability" || command.substr(0, 7) == "ABILITY") {
+    else if (command.substr(0, 7) == "ability" ||
+             command.substr(0, 7) == "ABILITY") {
       cout << endl;
       int abilityNum = command[7] - '0';
       // cout << abilityNum << endl;
@@ -230,7 +234,8 @@ void Controller::runGame() {
         if (requiredParams == "char") {
           char linkChar = (command[8]);
           try {
-            curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), linkChar);
+            curPlayer->intToAbility[abilityNum]->useAbility(
+                curPlayer->getPlayerNum(), linkChar);
           } catch (char const *err) {
             cout << err << endl;
             readError = 1;
@@ -241,8 +246,8 @@ void Controller::runGame() {
           char linkChar1 = (command[8]);
           char linkChar2 = (command[9]);
           try {
-            curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), linkChar1,
-                                                            linkChar2);
+            curPlayer->intToAbility[abilityNum]->useAbility(
+                curPlayer->getPlayerNum(), linkChar1, linkChar2);
           } catch (char const *err) {
             cerr << err << endl;
             readError = 1;
@@ -255,7 +260,8 @@ void Controller::runGame() {
           int col = (command[9]) - 48;
           cout << col << endl;
           try {
-            curPlayer->intToAbility[abilityNum]->useAbility(curPlayer->getPlayerNum(), row, col);
+            curPlayer->intToAbility[abilityNum]->useAbility(
+                curPlayer->getPlayerNum(), row, col);
           } catch (char const *err) {
             cerr << err << endl;
             readError = 1;
@@ -274,7 +280,8 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Sequence.
     // ------------------------------------------------------------------------
-    else if (command.substr(0, 8) == "sequence" || command.substr(0, 8) == "SEQUENCE") {
+    else if (command.substr(0, 8) == "sequence" ||
+             command.substr(0, 8) == "SEQUENCE") {
       string file = command.substr(8, command.length() - 8);
       cout << file << endl;
       // Check if file exists and is readable.
@@ -320,7 +327,8 @@ void Controller::runGame() {
     // ------------------------------------------------------------------------
     //  Quit.
     // ------------------------------------------------------------------------
-    else if (command == "quit" || command == "QUIT" || (!useFile && std::cin.eof()) || (useFile && fileIn->eof())) {
+    else if (command == "quit" || command == "QUIT" ||
+             (!useFile && std::cin.eof()) || (useFile && fileIn->eof())) {
       cout << "Ending abruptly, " << endl << endl;
 
       cout << "████████╗██╗███████╗  ░██████╗░░█████╗░███╗░░░███╗███████╗\n╚══█"
@@ -420,8 +428,8 @@ void Controller::callBoard(std::shared_ptr<Player> curPlayer) {
   std::unordered_map<char, string> allLinkNames;
   std::unordered_map<char, Link *>::iterator it;
 
-  for (auto it = Player::allCharToLink.begin(); it != Player::allCharToLink.end();
-       it++) {
+  for (auto it = Player::allCharToLink.begin();
+       it != Player::allCharToLink.end(); it++) {
     string idStr;
     if ((curPlayer->getPlayerNum() == 1 && it->second->getOwner() == 2 &&
          it->second->getIsHidden()) ||

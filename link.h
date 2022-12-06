@@ -35,7 +35,7 @@ class Link {
   bool getIsHidden();
 	int getOwner();
   void boost();
-  int battle(Link & l2);
+  int battle(char l2);
   int getRow();
   int getCol();
   int getStrength();

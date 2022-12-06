@@ -82,10 +82,10 @@ void Firewall::useAbility(int player, int x, int y) {
   }
   if (player == 1) {
     board.grid[x][y]->setFirewall1();
-    board.grid[x][y]->setAppearance('m');
+    board.grid[x][y]->appearance = 'm';
   } else {
     board.grid[x][y]->setFirewall2();
-    board.grid[x][y]->setAppearance('w');
+    board.grid[x][y]->appearance = 'w';
   }
   isUsed = true;
   cout << "Firewall used at position " << x << ", " << y << "." << endl;
@@ -182,9 +182,9 @@ void LinkReborn::useAbility(int player, char l) {
     if (originalCol == 3 || originalCol == 4) originalRow = 6;
   }
   cout << originalRow << originalCol;
-  if (board.grid[originalRow][originalCol]->getAppearance() != '.')
+  if (board.grid[originalRow][originalCol]->appearance != '.')
     throw "Original spawn position of link is not free.";
-  board.grid[originalRow][originalCol]->setAppearance(l);
+  board.grid[originalRow][originalCol]->appearance = l;
   board.grid[originalRow][originalCol]->setOwner(player);
   charToLink[l]->revive();
   charToLink[l]->setLocation(originalRow, originalCol);
@@ -209,13 +209,13 @@ HighGround::HighGround(int i, std::unordered_map<char, std::shared_ptr<Link>>& c
 
 void HighGround::useAbility(int player, int x, int y) {
   if (isUsed) throw "Ability already used.";
-  if (board.grid[x][y]->getAppearance() == '.') {
+  if (board.grid[x][y]->appearance == '.') {
     if (player == 1) {
-      board.grid[x][y]->setAppearance('z');
+      board.grid[x][y]->appearance = 'z';
       board.grid[x][y]->setOwner(1);
       board.grid[x][y]->setHighGround1();
     } else if (player == 2) {
-      board.grid[x][y]->setAppearance('Z');
+      board.grid[x][y]->appearance = 'Z';
       board.grid[x][y]->setOwner(2);
       board.grid[x][y]->setHighGround2();
     }
@@ -253,8 +253,8 @@ void Portal::useAbility(int player, char l1, char l2) {
   int row2 = charToLink[l2]->getRow();
   int col1 = charToLink[l1]->getCol();
   int col2 = charToLink[l2]->getCol();
-  board.grid[row1][col1]->setAppearance(c2);
-  board.grid[row2][col2]->setAppearance(c1);
+  board.grid[row1][col1]->appearance = c2;
+  board.grid[row2][col2]->appearance = c1;
   charToLink[l1]->setLocation(row2, col2);
   charToLink[l2]->setLocation(row1, col1);
   cout << "Portal used with links " << l1 << " and " << l2 << "." << endl;

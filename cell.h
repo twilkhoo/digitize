@@ -5,8 +5,6 @@ class Cell {
  private:
   int x;
   int y;
-  
-  char appearance = '.';
 
   int owner = 0;
 
@@ -17,14 +15,12 @@ class Cell {
   bool isHighGround1 = false;
   bool isHighGround2 = false;
 
-
  public:
-
   Cell(int x_, int y_, bool isPort1_, bool isPort2_);
   ~Cell() = default;
 
-  char getAppearance();
-  void setAppearance (char letter);
+  char appearance = '.';
+
   bool getFirewall1();
   bool getFirewall2();
   int getOwner();
