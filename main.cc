@@ -104,8 +104,6 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  system("clear");
-
   // if (graphics) cout << "Graphics enabled" << endl;
   // cout << abilitiesP1 << endl;
   // cout << abilitiesP2 << endl;
