@@ -76,8 +76,7 @@ void Link::revive() {
 
 bool Link::isReborn() { return reborn; }
 
-// switches link from data to a virus or vice versa
-
+// Switches link from data to a virus or vice versa.
 void Link::linkSwitch() {
   if (isData) {
     isData = false;
@@ -90,15 +89,15 @@ int Link::getOwner() {
 	return owner;
 }
 
-// Battle Command
-
-int Link::battle(Link & l2) {
+// Battle command.
+int Link::battle(char l2) {
+  std::shared_ptr<Link> opponentLink = allCharToLink[l2];
   if (getIsHidden()) { reveal(); }
-  if (l2.getIsHidden()) { l2.reveal(); }
-  if (getStrength() >= l2.getStrength()) {
+  if (opponentLink->getIsHidden()) { opponentLink->reveal(); }
+  if (getStrength() >= opponentLink->getStrength()) {
     return owner;
   } else {
-    return l2.owner;
+    return opponentLink->owner;
   }
 }
 
@@ -187,8 +186,8 @@ void Link::commonMove(char dir) {
   if (dir == 'l') desiredCol = col - speed;
   if (dir == 'r') desiredCol = col + speed;
 
-  cout << "Current: " << row << " " << col << endl;
-  cout << "Desired: " << desiredRow << " " << desiredCol << endl;
+  // cout << "Current: " << row << " " << col << endl;
+  // cout << "Desired: " << desiredRow << " " << desiredCol << endl;
 
   // Ensure desired location is in bounds.
   bool invalidDirection = false;
@@ -296,9 +295,9 @@ void Link::commonMove(char dir) {
   if (desiredChar != '.' && desiredChar!= 'm' && desiredChar != 'w' &&
       board.grid[desiredRow][desiredCol]->getOwner() != 0) {
     cout << "Battle initiated: " << letter << " vs. " << desiredChar << endl;
-    int winner = battle(*allCharToLink[desiredChar]);
+    int winner = battle(desiredChar);
     if (winner == owner) {
-      cout << "Player " << winner << " wins! Downloading enemy link: " << desiredChar << endl;
+      cout << "Player " << winner << " wins!" << endl;
       allCharToLink[desiredChar]->download();
       board.grid[desiredRow][desiredCol]->setAppearance(letter);
       board.grid[row][col]->setAppearance('.');
@@ -310,7 +309,7 @@ void Link::commonMove(char dir) {
         board.grid[desiredRow][desiredCol]->destroyHighGround();
       }
     } else {
-      cout << "Player " << winner << " wins! Link downloaded by enemy: " << letter << endl;
+      cout << "Player " << winner << " wins!" << endl;
       download();
     }
     return;
