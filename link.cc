@@ -68,6 +68,7 @@ bool Link::getIsHidden() {
 void Link::revive() {
   Downloaded = false;
   reborn = true;
+  dead = false;
 }
 
 // Checks if link has been revived
@@ -101,7 +102,9 @@ int Link::battle(Link & l2) {
 }
 
 void Link::download() { 
-  Downloaded = true; reveal();
+  Downloaded = true; 
+  reveal();
+  dead = true;
   board.grid[row][col]->setAppearance('.');
   board.grid[row][col]->setOwner(0);
   movingFromAbility();
@@ -117,6 +120,10 @@ bool Link::isDownloaded() { return Downloaded; }
 
 void Link::reveal() {
   isHidden = false;
+}
+
+bool Link::isDead() {
+  return dead;
 }
 
 int Link::getStrength() { 
@@ -255,7 +262,16 @@ void Link::commonMove(char dir) {
       setLocation(desiredRow, desiredCol);
     }
 
-  // Moving onto your own high ground.
+  // Moving onto enemy high ground
+  if ((owner == 1 && board.grid[desiredRow][desiredCol]->getAppearance() == 'Z') || 
+      (owner == 2 && board.grid[desiredRow][desiredCol]->getAppearance() == 'z')) {
+    throw "You cannot move onto high ground unless it is occupied by an opponent.";
+  }
+
+
+  // Moving onto your own high ground. This will update the link visually to show its elevated
+  // strength due to the high ground.
+
   if ((owner == 1 && board.grid[desiredRow][desiredCol]->getHighGround1()) || 
       (owner == 2 && board.grid[desiredRow][desiredCol]->getHighGround2())) {
     if (isVirus()) {
