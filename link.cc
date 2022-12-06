@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "board.h"
 
@@ -13,7 +14,7 @@ using std::endl;
 // ----------------------------------------------------------------------------
 
 Link::Link(int strength_, Board& board_, int owner_, char letter_, bool isData_,
-           std::unordered_map<char, Link*>& allCharToLink_)
+           std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink_)
     : strength{strength_},
       board{board_},
       owner{owner_},
@@ -335,7 +336,7 @@ void Link::commonMove(char dir) {
 // ----------------------------------------------------------------------------
 
 Data::Data(int strength_, Board& board_, int owner_, char letter_, bool isData_,
-           std::unordered_map<char, Link*>& allCharToLink_)
+           std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink_)
     : Link(strength_, board_, owner_, letter_, isData_, allCharToLink_) {}
 
 void Data::move(char dir) { commonMove(dir); }
@@ -346,7 +347,7 @@ void Data::move(char dir) { commonMove(dir); }
 // ----------------------------------------------------------------------------
 
 Virus::Virus(int strength_, Board& board_, int owner_, char letter_,
-             bool isData_, std::unordered_map<char, Link*>& allCharToLink_)
+             bool isData_, std::unordered_map<char, std::shared_ptr<Link>>& allCharToLink_)
     : Link(strength_, board_, owner_, letter_, isData_, allCharToLink_) {}
 
 void Virus::move(char dir) { commonMove(dir); }

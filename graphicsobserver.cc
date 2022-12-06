@@ -1,9 +1,10 @@
-#include "graphicsobserver.h"
+#include <memory>
 
+#include "graphicsobserver.h"
 #include "board.h"
 #include "xwindow.h"
 
-GraphicsObserver::GraphicsObserver(Board *subject_) : subject{subject_} {
+GraphicsObserver::GraphicsObserver(std::shared_ptr<Board> subject_) : subject{subject_} {
   subject->attach(this);
 }
 

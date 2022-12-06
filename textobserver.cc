@@ -1,6 +1,8 @@
+#include <memory>
+
 #include "textobserver.h"
 
-TextObserver::TextObserver(Board* subject_) : subject{subject_} {
+TextObserver::TextObserver(std::shared_ptr<Board> subject_) : subject{subject_} {
   subject->attach(this);
 }
 

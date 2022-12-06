@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "ability.h"
 #include "link.h"
@@ -20,10 +21,9 @@ class Player {
 
  public:
   Player(std::string linkString, std::string abilityString, int playerNum_, Board& board_);
-  ~Player();
 
-  std::unordered_map<int, Ability*> intToAbility;
-  static std::unordered_map<char, Link*> allCharToLink;
+  std::unordered_map<int, std::shared_ptr<Ability>> intToAbility;
+  static std::unordered_map<char, std::shared_ptr<Link>> allCharToLink;
 
   int getPlayerNum();
   int getDataCount();

@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -105,11 +106,11 @@ int main(int argc, char *argv[]) {
 
   system("clear");
 
-  if (graphics) cout << "Graphics enabled" << endl;
-  cout << abilitiesP1 << endl;
-  cout << abilitiesP2 << endl;
-  cout << linksP1 << endl;
-  cout << linksP2 << endl;
+  // if (graphics) cout << "Graphics enabled" << endl;
+  // cout << abilitiesP1 << endl;
+  // cout << abilitiesP2 << endl;
+  // cout << linksP1 << endl;
+  // cout << linksP2 << endl;
   cout << "----------------------------------------------------------------"
        << endl;
 
@@ -119,10 +120,9 @@ int main(int argc, char *argv[]) {
   //
   // --------------------------------------------------------------------------
 
-  Controller *game =
-      new Controller(abilitiesP1, abilitiesP2, linksP1, linksP2, graphics);
+  auto game = std::make_unique<Controller>(
+      abilitiesP1, abilitiesP2, linksP1, linksP2, graphics);
   game->runGame();
-  delete game;
 }
 
 // ----------------------------------------------------------------------------
@@ -136,13 +136,13 @@ int main(int argc, char *argv[]) {
 const string randomizedLinks(int playerSeed) {
   playerSeed == 1 ? srand((unsigned)time(0)) : srand((unsigned)time(0) + 1);
 
-  vector<string> newLinks(links);
+  vector<string> myLinks(links);
   int randomInt;
   string linkString = "";
   for (int i = 0; i < 8; i++) {
-    randomInt = (rand() % newLinks.size());
-    linkString += newLinks[randomInt];
-    newLinks.erase(newLinks.begin() + randomInt);
+    randomInt = (rand() % myLinks.size());
+    linkString += myLinks[randomInt];
+    myLinks.erase(myLinks.begin() + randomInt);
   }
 
   return linkString;

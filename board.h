@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include "cell.h"
 #include "subject.h"
@@ -14,10 +15,10 @@ class Board : public Subject {
   int length = 8;
 
  public:
-  std::vector<std::vector<Cell*>> grid;
+  std::vector<std::vector<std::unique_ptr<Cell>>> grid;
 
   Board();
-  ~Board();
+  ~Board() = default;
 
   friend std::ostream& operator<<(std::ostream& out, Board& board);
 
