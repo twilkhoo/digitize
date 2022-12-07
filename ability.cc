@@ -209,6 +209,7 @@ HighGround::HighGround(int i, std::unordered_map<char, std::shared_ptr<Link>>& c
 
 void HighGround::useAbility(int player, int x, int y) {
   if (isUsed) throw "Ability already used.";
+  if (!(2 <= x && x <= 5)) throw "High Ground must be cast in the middle four rows.";
   if (board.grid[x][y]->appearance == '.') {
     if (player == 1) {
       board.grid[x][y]->appearance = 'z';
