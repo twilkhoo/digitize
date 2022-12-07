@@ -1,8 +1,8 @@
 #include "ability.h"
 
 #include <iostream>
-#include <string>
 #include <memory>
+#include <string>
 
 using std::cout;
 using std::endl;
@@ -14,7 +14,8 @@ using std::string;
 
 Ability::Ability(const string& name_, const string& params_,
                  const string& description_, const string& usage_,
-                 const int& id_, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+                 const int& id_,
+                 std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
                  Board& board_)
     : name{name_},
       params{params_},
@@ -40,8 +41,9 @@ int Ability::getId() { return id; }
 // LinkBoost
 // ----------------------------------------------------------------------------
 
-LinkBoost::LinkBoost(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
-                     Board& board_)
+LinkBoost::LinkBoost(
+    int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+    Board& board_)
     : Ability("LinkBoost", "char",
               "Allows one of your links to move two spaces at a time, being "
               "able to jump "
@@ -63,7 +65,8 @@ void LinkBoost::useAbility(int player, char l) {
 // Firewall
 // ----------------------------------------------------------------------------
 
-Firewall::Firewall(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+Firewall::Firewall(int i,
+                   std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
                    Board& board_)
     : Ability("Firewall", "intint",
               "Places a firewall on an empty square. When an opponent's link "
@@ -74,12 +77,17 @@ Firewall::Firewall(int i, std::unordered_map<char, std::shared_ptr<Link>>& charT
 
 void Firewall::useAbility(int player, int x, int y) {
   if (isUsed) throw "Ability already used.";
+
+  if (x < 0 || x > 7 || y < 0 || y > 7)
+    throw "Firewall must be placed on the board.";
+
   if (board.grid[x][y]->getPort1() || board.grid[x][y]->getPort2() ||
       board.grid[x][y]->getHighGround1() ||
       board.grid[x][y]->getHighGround2() || board.grid[x][y]->getFirewall1() ||
-      board.grid[x][y]->getFirewall2()) {
-    throw "You can't place your firewall on cells occupied by ports and other abilities.";
+      board.grid[x][y]->getFirewall2() || board.grid[x][y]->getOwner()) {
+    throw "You can't place your firewall on cells occupied by ports, links or other abilities.";
   }
+
   if (player == 1) {
     board.grid[x][y]->setFirewall1();
     board.grid[x][y]->appearance = 'm';
@@ -95,7 +103,8 @@ void Firewall::useAbility(int player, int x, int y) {
 // Download
 // ----------------------------------------------------------------------------
 
-Download::Download(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+Download::Download(int i,
+                   std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
                    Board& board_)
     : Ability("Download", "char", "Downloads an opponent's link.",
               "ability " + std::to_string(i) + " <opponentLinkChar>", i,
@@ -103,6 +112,7 @@ Download::Download(int i, std::unordered_map<char, std::shared_ptr<Link>>& charT
 
 void Download::useAbility(int player, char l) {
   if (isUsed) throw "Ability already used.";
+  if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
   if (charToLink[l]->getOwner() == player)
     throw "You can only download your opponent's link.";
   charToLink[l]->download();
@@ -114,7 +124,8 @@ void Download::useAbility(int player, char l) {
 // Polarize
 // ----------------------------------------------------------------------------
 
-Polarize::Polarize(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+Polarize::Polarize(int i,
+                   std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
                    Board& board_)
     : Ability("Polarize", "char",
               "Changes any link from a data to a virus of same strength, or "
@@ -124,6 +135,7 @@ Polarize::Polarize(int i, std::unordered_map<char, std::shared_ptr<Link>>& charT
 
 void Polarize::useAbility(int player, char l) {
   if (isUsed) throw "Ability already used.";
+  if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
   charToLink[l]->linkSwitch();
   isUsed = true;
   cout << "Polarize used with link " << l << "." << endl;
@@ -133,15 +145,15 @@ void Polarize::useAbility(int player, char l) {
 // Scan
 // ----------------------------------------------------------------------------
 
-Scan::Scan(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_, Board& board_)
+Scan::Scan(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+           Board& board_)
     : Ability("Scan", "char", "Reveals the type of any link on the field.",
               "ability " + std::to_string(i) + " <linkChar>", i, charToLink_,
               board_){};
 
 void Scan::useAbility(int player, char l) {
   if (isUsed) throw "Ability already used.";
-  if (charToLink[l]->getOwner() == player)
-    throw "You can only scan your opponent's link.";
+  if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
   if (!(charToLink[l]->getIsHidden()))
     throw "This link has already been revealed.";
   charToLink[l]->reveal();
@@ -153,8 +165,9 @@ void Scan::useAbility(int player, char l) {
 // LinkReborn
 // ----------------------------------------------------------------------------
 
-LinkReborn::LinkReborn(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
-                       Board& board_)
+LinkReborn::LinkReborn(
+    int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+    Board& board_)
     : Ability(
           "LinkReborn", "char",
           "Revives any of your links that are currently not in play, placing "
@@ -164,6 +177,7 @@ LinkReborn::LinkReborn(int i, std::unordered_map<char, std::shared_ptr<Link>>& c
 
 void LinkReborn::useAbility(int player, char l) {
   if (isUsed) throw "Ability already used.";
+  if (tolower(l) < 'a' || tolower(l) > 'h') throw "Unknown link.";
   if (charToLink[l]->isReborn())
     throw "This link has already been revived once.";
   if (charToLink[l]->getSelfDownloaded())
@@ -196,8 +210,9 @@ void LinkReborn::useAbility(int player, char l) {
 // HighGround
 // ----------------------------------------------------------------------------
 
-HighGround::HighGround(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
-                       Board& board_)
+HighGround::HighGround(
+    int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+    Board& board_)
     : Ability("HighGround", "intint",
               "Makes any empty square a high ground square, which opponent "
               "links cannot pass through, and your links gain one strength "
@@ -208,8 +223,11 @@ HighGround::HighGround(int i, std::unordered_map<char, std::shared_ptr<Link>>& c
               i, charToLink_, board_){};
 
 void HighGround::useAbility(int player, int x, int y) {
+  if (x < 0 || x > 7 || y < 0 || y > 7)
+    throw "HighGround must be placed on the board.";
   if (isUsed) throw "Ability already used.";
-  if (!(2 <= x && x <= 5)) throw "High Ground must be cast in the middle four rows.";
+  if (!(2 <= x && x <= 5))
+    throw "HighGround must be cast in the middle four rows.";
   if (board.grid[x][y]->appearance == '.') {
     if (player == 1) {
       board.grid[x][y]->appearance = 'z';
@@ -231,7 +249,8 @@ void HighGround::useAbility(int player, int x, int y) {
 // Portal
 // ----------------------------------------------------------------------------
 
-Portal::Portal(int i, std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
+Portal::Portal(int i,
+               std::unordered_map<char, std::shared_ptr<Link>>& charToLink_,
                Board& board_)
     : Ability("Portal", "charchar",
               "Swaps the positions of any two of your links.",
@@ -243,6 +262,9 @@ void Portal::useAbility(int player, char l1, char l2) {
   if (isUsed) {
     throw "Ability already used.";
   }
+  if (tolower(l1) < 'a' || tolower(l1) > 'h') throw "Unknown link.";
+  if (tolower(l2) < 'a' || tolower(l2) > 'h') throw "Unknown link.";
+  if (l1 == l2) throw "You cannot swap a link with itself.";
   if (charToLink[l1]->getOwner() != player ||
       charToLink[l2]->getOwner() != player)
     throw "Links are not both owned by player.";
@@ -258,5 +280,6 @@ void Portal::useAbility(int player, char l1, char l2) {
   board.grid[row2][col2]->appearance = c1;
   charToLink[l1]->setLocation(row2, col2);
   charToLink[l2]->setLocation(row1, col1);
+  isUsed = true;
   cout << "Portal used with links " << l1 << " and " << l2 << "." << endl;
 }

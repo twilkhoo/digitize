@@ -51,14 +51,14 @@ int main(int argc, char *argv[]) {
     if ((arg == "-link1" || arg == "-link2")) {
       // Check if there is a following cl-arg.
       if (argc <= i + 1) {
-        cerr << "No placement file provided for " << arg << endl;
+        cerr << "No placement file provided for " << arg << "." << endl;
         continue;
       }
 
       // Check if file exists and is readable.
       std::ifstream infile{argv[i + 1]};
       if (!infile.good()) {
-        cerr << "No valid placement file provided for " << arg << endl;
+        cerr << "No valid placement file provided for " << arg << "." << endl;
         continue;
       }
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
       // Validate the string using a hashmap.
       if (!validateLinkString(linkString)) {
-        cerr << "No valid placement file provided for " << arg << endl;
+        cerr << "No valid placement file provided for " << arg << "." << endl;
         continue;
       }
       arg == "-link1" ? linksP1 = linkString : linksP2 = linkString;
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     if ((arg == "-ability1" || arg == "-ability2")) {
       // Check if there is a following cl-arg.
       if (argc <= i + 1) {
-        cerr << "No ability string provided for " << arg << endl;
+        cerr << "No ability string provided for " << arg << "." << endl;
         continue;
       }
 
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
 
       // Validate the string using a hashmap.
       if (!validateAbilityString(abilityString)) {
-        cerr << "Invalid ability string provided for " << arg << endl;
+        cerr << "Invalid ability string provided for " << arg << "." << endl;
         continue;
       }
       arg == "-ability1" ? abilitiesP1 = abilityString

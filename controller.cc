@@ -137,7 +137,7 @@ void Controller::runGame() {
     }
 
     else if (p2->getDataCount() == 4 || p1->getVirusCount() == 4) {  // P2 wins.
-      cout << "Congratulations..." << endl;
+      cout << "Congratulations..." << endl << endl;
 
       cout
           << "██████╗░██████╗░  ░██╗░░░░░░░██╗██╗███╗░░██╗░██████╗\n██╔══██╗╚══"
@@ -263,9 +263,9 @@ void Controller::runGame() {
 
         if (requiredParams == "intint") {
           int row = (command[8]) - 48;
-          cout << row << endl;
+          // cout << row << endl;
           int col = (command[9]) - 48;
-          cout << col << endl;
+          // cout << col << endl;
           try {
           if (command.length() != 10) throw "Please specify two integers.";
             curPlayer->intToAbility[abilityNum]->useAbility(
