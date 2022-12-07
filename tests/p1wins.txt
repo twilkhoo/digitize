@@ -1,0 +1,25 @@
+ability 1 d
+move d d
+move E u
+move d d
+ability 4 d
+move E u
+move d d
+move E u
+ability 2 2 4
+move f d
+move E u
+move f d
+move D u
+move f d
+move D u
+move f d
+move D u
+move f d
+move D u
+move f l
+move D r
+move f d
+move D r
+move f d
+ability 3 c
