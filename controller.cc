@@ -156,6 +156,13 @@ void Controller::runGame() {
     callBoard(curPlayer);
     cout << endl;
 
+    // Check if reached the end of a sequence
+
+    if (useFile == true && fileIn->eof()) {
+      useFile = false;
+    }
+
+
     // For organization, we will use getline instead of only input stream. So,
     // commands must be entered on the same line. This is made clear in -help.
     if (useFile) {
@@ -330,7 +337,7 @@ void Controller::runGame() {
     //  Quit.
     // ------------------------------------------------------------------------
     else if (command == "quit" || command == "QUIT" ||
-             (!useFile && std::cin.eof()) || (useFile && fileIn->eof())) {
+              std::cin.eof()) {
       cout << "Ending abruptly, " << endl << endl;
 
       cout << "████████╗██╗███████╗  ░██████╗░░█████╗░███╗░░░███╗███████╗\n╚══█"
