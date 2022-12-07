@@ -1,0 +1,23 @@
+move e d
+ability 1 E
+move E u
+move e d
+move E u
+ability 1 e
+move e d
+move E u
+move d d
+ability 2 3 3
+move D u
+move d d
+ability 5 D
+move D r
+move e d
+move C u
+move c d
+move C u
+move c d
+move C u
+move c d
+move F u
+move c r
