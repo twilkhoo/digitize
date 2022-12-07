@@ -246,6 +246,7 @@ void Controller::runGame() {
           char linkChar1 = (command[8]);
           char linkChar2 = (command[9]);
           try {
+          if (command.length() != 10) throw "Please specify two links.";
             curPlayer->intToAbility[abilityNum]->useAbility(
                 curPlayer->getPlayerNum(), linkChar1, linkChar2);
           } catch (char const *err) {
@@ -260,6 +261,7 @@ void Controller::runGame() {
           int col = (command[9]) - 48;
           cout << col << endl;
           try {
+          if (command.length() != 10) throw "Please specify two integers.";
             curPlayer->intToAbility[abilityNum]->useAbility(
                 curPlayer->getPlayerNum(), row, col);
           } catch (char const *err) {
