@@ -60,7 +60,6 @@ void Controller::runGame() {
   while (true) {
     printLine();
     if (switchPlayers) {
-      system("clear");
       switchPlayers = false;
     }
 
