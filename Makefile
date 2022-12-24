@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++14 -Wall -Werror -g -Werror=vla -MMD
-EXEC = raiinet
+EXEC = digitize
 OBJECTS = main.o controller.o subject.o textobserver.o graphicsobserver.o xwindow.o board.o cell.o player.o link.o ability.o 
 DEPENDS = ${OBJECTS:.o=.d}
 

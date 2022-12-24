@@ -43,7 +43,7 @@ void Link::setLocation(int row_, int col_) {
   board.grid[row][col]->appearance = letter;
 }
 
-void Link::boost() { speed = 2; }
+void Link::boost() { speed++; }
 
 std::string Link::getName() {
   std::string str = "";
